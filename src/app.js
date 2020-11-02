@@ -5,12 +5,10 @@ function boot(data, key, value) {
   const filterRes = filter(data, key, value);
   console.log(filterRes);
 
-  console.log(mostExpensiveProduct);
-
-  const newProducts = formatData(products);
+  const newProducts = formatData(filterRes);
   console.log(newProducts);
 
-  return null;
+  console.log(mostExpensiveProduct);
 }
 
 boot(products, 'type', 'socks');

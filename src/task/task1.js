@@ -1,12 +1,10 @@
 function task1(data, key, value) {
   if (!Array.isArray(data)) {
-    console.error('"data" must be a array');
-    return null;
+    throw new Error('"data" must be a array');
   }
 
   if (typeof key !== 'string') {
-    console.error('"param1" must be a string');
-    return null;
+    throw new Error('"key" must be a string');
   }
 
   return data.filter((item) => item[key] === value);
