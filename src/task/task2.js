@@ -1,21 +1,20 @@
 const products = require('../../products.json');
 
+function getTotalPrice(product) {
+  const price = product.price || product.priceForPair;
+  const priceNum = parseInt(price.match(/\d+/), 10);
+  return product.quantity * priceNum;
+}
+
 function task2(data) {
-  const productHighPrice = data.reduce((prev, item) => {
+  return data.reduce((prev, item) => {
     if (!item.quantity) return prev;
 
-    const prevPrice = prev.price || prev.priceForPair;
-    const prevPriceNum = parseInt(prevPrice.match(/\d+/), 10);
-    const prevTotalPrice = prev.quantity * prevPriceNum;
-
-    const price = item.price || item.priceForPair;
-    const priceNum = parseInt(price.match(/\d+/), 10);
-    const totalPrice = item.quantity * priceNum;
+    const prevTotalPrice = getTotalPrice(prev);
+    const totalPrice = getTotalPrice(item);
 
     return prevTotalPrice > totalPrice ? prev : item;
   });
-
-  return productHighPrice;
 }
 
 module.exports = task2(products);
