@@ -1,0 +1,24 @@
+# root
+GET http://localhost:3000/
+###
+
+GET http://localhost:3000/set-default
+###
+
+GET http://localhost:3000/max
+###
+
+GET http://localhost:3000/filter?field=type&value=socks
+###
+
+GET http://localhost:3000/format-data?field=type&value=socks
+###
+
+POST http://localhost:3000/set-data HTTP/1.1
+content-type: application/json
+
+[
+    { "type": "socks", "color": "red", "quantity": "10", "priceForPair": "$3" },
+    { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
+]
+###
