@@ -4,24 +4,26 @@ const products = require('../products.json');
 const productsDefault = require('../products-default.json');
 const { task1: filter, task2: mostExpensiveProduct, task3: formatData } = require('./task');
 
-function home(response, queryParams) {
+function home(response) {
   response.statusCode = 200;
-  if (queryParams.default) {
-    fs.writeFileSync(path.resolve('products.json'), JSON.stringify(productsDefault));
-    response.end('Set default data');
-  } else {
-    response.end('Server Works');
-  }
+  response.end('Server Works');
+}
+
+function setDefaultData(response) {
+  fs.writeFileSync(path.resolve('products.json'), JSON.stringify(productsDefault));
+  response.statusCode = 200;
+  response.end('Set default data');
 }
 
 function filterData(response, queryParams) {
-  response.statusCode = 200;
-
   if (queryParams.field && queryParams.value) {
-    response.setHeader('Content-Type', 'application/json');
     const filterRes = filter(products, queryParams.field, queryParams.value);
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
     response.end(JSON.stringify(filterRes));
   } else {
+    response.statusCode = 400;
     response.end('Need query "field" and "value"');
   }
 }
@@ -33,21 +35,22 @@ function expensiveProduct(response) {
 }
 
 function formatDataHandler(response, queryParams) {
-  response.statusCode = 200;
-
   if (queryParams.field && queryParams.value) {
-    response.setHeader('Content-Type', 'application/json');
     const filterRes = filter(products, queryParams.field, queryParams.value);
     const product = formatData(filterRes);
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
     response.end(JSON.stringify(product));
   } else {
+    response.statusCode = 400;
     response.end('Need query "field" and "value"');
   }
 }
 
 function setData(data, response) {
   if (!Array.isArray(data)) {
-    response.statusCode = 404;
+    response.statusCode = 400;
     response.end('JSON must be a array');
   } else {
     fs.writeFileSync(path.resolve('products.json'), JSON.stringify(data));
@@ -57,4 +60,19 @@ function setData(data, response) {
   }
 }
 
-module.exports = { home, expensiveProduct, filterData, setData, formatDataHandler };
+function notFound(res) {
+  res.setHeader('Content-Type', 'text/html');
+  res.statusCode = 404;
+  res.write('<h1>Not Found</h1>');
+  res.end();
+}
+
+module.exports = {
+  home,
+  expensiveProduct,
+  filterData,
+  setData,
+  formatDataHandler,
+  setDefaultData,
+  notFound,
+};

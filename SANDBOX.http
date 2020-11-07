@@ -2,6 +2,9 @@
 GET http://localhost:3000/
 ###
 
+GET http://localhost:3000/set-default
+###
+
 GET http://localhost:3000/max
 ###
 
