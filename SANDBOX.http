@@ -4,13 +4,18 @@ GET http://localhost:3000/
 
 GET http://localhost:3000/max
 ###
-GET http://localhost:3000/items?field=type&value=socks
+
+GET http://localhost:3000/filter?field=type&value=socks
 ###
-POST http://localhost:3000/comment HTTP/1.1
+
+GET http://localhost:3000/format-data?field=type&value=socks
+###
+
+POST http://localhost:3000/set-data HTTP/1.1
 content-type: application/json
 
-{
-    "name": "sample",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
-}
+[
+    { "type": "socks", "color": "red", "quantity": "10", "priceForPair": "$3" },
+    { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
+]
 ###
