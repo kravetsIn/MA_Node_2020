@@ -1,4 +1,4 @@
-const products = require('../../products.json');
+const products = require('../../../products.json');
 
 function getTotalPrice(product) {
   const price = product.price || product.priceForPair;

@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const products = require('../products.json');
 const productsDefault = require('../products-default.json');
-const { task1: filter, task2: mostExpensiveProduct, task3: formatData } = require('./task');
+const {
+  tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
+} = require('./services');
 
 function home(response) {
   response.statusCode = 200;

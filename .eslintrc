@@ -13,11 +13,8 @@
     "rules": {
         "no-console":"off",
         "prettier/prettier": "error",
-        "no-param-reassign": [
-            "error",
-            {
-                "props": false
-            }
-        ]
+        "no-param-reassign": [ "error", { "props": false } ],
+        "no-plusplus":  [ "error", { "allowForLoopAfterthoughts": true }],
+        "no-extend-native":  [ "error", { "exceptions": ["Array"] }]
     }
 }
