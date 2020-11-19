@@ -7,6 +7,7 @@ const {
   setDefaultData,
   notFound,
   discountHandlerCallback,
+  discountHandlerPromise,
 } = require('./controller');
 
 module.exports = (request, response) => {
@@ -38,6 +39,9 @@ module.exports = (request, response) => {
 
     case method === 'GET' && pathname === '/callback':
       return discountHandlerCallback(response);
+
+    case method === 'GET' && pathname === '/promise':
+      return discountHandlerPromise(response);
 
     default:
       return notFound(response);

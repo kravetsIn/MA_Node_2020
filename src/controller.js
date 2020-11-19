@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
+
 const products = require('../products.json');
 const productsDefault = require('../products-default.json');
 const {
@@ -154,6 +156,85 @@ function discountHandlerCallback(response) {
   });
 }
 
+function itemDiscountPromise(item) {
+  const utilPromisify = util.promisify(generateDiscount);
+  return utilPromisify()
+    .then((res) => {
+      const { price } = item;
+      const priceNum = Number(price.match(/\d+/));
+      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+
+      return { ...item, discount: disc };
+    })
+    .catch(() => {
+      return itemDiscountPromise(item);
+    });
+}
+
+function itemDiscountPromiseX2(item) {
+  const utilPromisify = util.promisify(generateDiscount);
+  return utilPromisify()
+    .then((res) => {
+      const { price } = item;
+      const priceNum = Number(price.match(/\d+/));
+      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+      item.discount = disc;
+
+      return utilPromisify();
+    })
+    .then((res) => {
+      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
+
+      return item;
+    })
+    .catch(() => {
+      return itemDiscountPromiseX2(item);
+    });
+}
+
+function itemDiscountPromiseX3(item) {
+  const utilPromisify = util.promisify(generateDiscount);
+  return utilPromisify()
+    .then((res) => {
+      const { price } = item;
+      const priceNum = Number(price.match(/\d+/));
+      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+      item.discount = disc;
+      return utilPromisify();
+    })
+    .then((res) => {
+      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
+      return utilPromisify();
+    })
+    .then((res) => {
+      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
+      return item;
+    })
+    .catch(() => {
+      return itemDiscountPromiseX3(item);
+    });
+}
+
+async function discountHandlerPromise(response) {
+  const formatProducts = formatData(products);
+  const mappedProducts = formatProducts.myMap((item) => {
+    switch (true) {
+      case item.type === 'hat' && item.color === 'red':
+        return itemDiscountPromiseX3(item);
+
+      case item.type === 'hat':
+        return itemDiscountPromiseX2(item);
+
+      default:
+        return itemDiscountPromise(item);
+    }
+  });
+  const result = await Promise.all(mappedProducts);
+  response.statusCode = 200;
+  response.setHeader('Content-Type', 'application/json');
+  response.end(JSON.stringify(result));
+}
+
 module.exports = {
   home,
   expensiveProduct,
@@ -163,4 +244,5 @@ module.exports = {
   setDefaultData,
   notFound,
   discountHandlerCallback,
+  discountHandlerPromise,
 };
