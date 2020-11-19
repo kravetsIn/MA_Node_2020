@@ -14,7 +14,7 @@
         "no-console":"off",
         "prettier/prettier": "error",
         "no-param-reassign": [ "error", { "props": false } ],
-        "no-plusplus":  [ "error", { "allowForLoopAfterthoughts": true }],
+        "no-plusplus":  "off",
         "no-extend-native":  [ "error", { "exceptions": ["Array"] }]
     }
 }

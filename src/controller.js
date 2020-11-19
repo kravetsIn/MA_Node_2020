@@ -115,6 +115,7 @@ function discountHandlerCallback(response) {
 
   const generateSaleItemCB = (itemData) => {
     const { item, index, arr } = itemData;
+
     generateDiscount((err, res) => {
       if (err) {
         generateSaleItemCB(itemData);
@@ -235,6 +236,78 @@ async function discountHandlerPromise(response) {
   response.end(JSON.stringify(result));
 }
 
+function generateDiscountAsync() {
+  return new Promise((resolve, reject) => {
+    generateDiscount((err, res) => {
+      if (err) reject(err);
+      else resolve(res);
+    });
+  });
+}
+
+async function asyncHandler(response) {
+  const { length } = products;
+  let j = 0;
+
+  const returnData = (data) => {
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify(data));
+  };
+
+  const formatProducts = () => {
+    returnData(
+      products.myMap((item) => {
+        item.quantity = item.quantity || 0;
+        item.price = item.price || item.priceForPair;
+        return item;
+      }),
+    );
+  };
+
+  const generateItemDiscount = async (item) => {
+    const res = await generateDiscountAsync();
+    const price = item.price || item.priceForPair;
+    const priceNum = Number(price.match(/\d+/));
+    const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+    return { ...item, discount: disc };
+  };
+
+  async function asyncMyMapCB(item, index) {
+    try {
+      let newItem;
+      switch (true) {
+        case item.type === 'hat' && item.color === 'red':
+          newItem = await generateItemDiscount(item);
+          newItem = await generateItemDiscount(newItem);
+          newItem = await generateItemDiscount(newItem);
+          break;
+
+        case item.type === 'hat':
+          newItem = await generateItemDiscount(item);
+          newItem = await generateItemDiscount(newItem);
+          break;
+
+        default:
+          newItem = await generateItemDiscount(item);
+          break;
+      }
+
+      j++;
+      products[index] = newItem;
+
+      if (j === length) {
+        formatProducts();
+      }
+    } catch (err) {
+      console.log(j, err.message);
+      asyncMyMapCB(item, index);
+    }
+  }
+
+  products.forEach(asyncMyMapCB);
+}
+
 module.exports = {
   home,
   expensiveProduct,
@@ -245,4 +318,5 @@ module.exports = {
   notFound,
   discountHandlerCallback,
   discountHandlerPromise,
+  asyncHandler,
 };

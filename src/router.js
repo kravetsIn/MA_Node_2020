@@ -8,6 +8,7 @@ const {
   notFound,
   discountHandlerCallback,
   discountHandlerPromise,
+  asyncHandler,
 } = require('./controller');
 
 module.exports = (request, response) => {
@@ -42,6 +43,9 @@ module.exports = (request, response) => {
 
     case method === 'GET' && pathname === '/promise':
       return discountHandlerPromise(response);
+
+    case method === 'GET' && pathname === '/async':
+      return asyncHandler(response);
 
     default:
       return notFound(response);
