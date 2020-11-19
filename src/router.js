@@ -6,6 +6,7 @@ const {
   formatDataHandler,
   setDefaultData,
   notFound,
+  saleHandlerCallback,
 } = require('./controller');
 
 module.exports = (request, response) => {
@@ -34,6 +35,9 @@ module.exports = (request, response) => {
 
     case method === 'GET' && pathname === '/format-data':
       return formatDataHandler(response, queryParams);
+
+    case method === 'GET' && pathname === '/callback':
+      return saleHandlerCallback(response);
 
     default:
       return notFound(response);

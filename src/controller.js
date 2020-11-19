@@ -6,6 +6,18 @@ const {
   tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
 } = require('./services');
 
+function myMapMethod(cb) {
+  const newArray = [];
+
+  for (let i = 0; i < this.length; i++) {
+    newArray[i] = cb(this[i], i);
+  }
+
+  return newArray;
+}
+
+Array.prototype.myMap = myMapMethod;
+
 function home(response) {
   response.statusCode = 200;
   response.end('Server Works');
@@ -62,11 +74,84 @@ function setData(data, response) {
   }
 }
 
-function notFound(res) {
-  res.setHeader('Content-Type', 'text/html');
-  res.statusCode = 404;
-  res.write('<h1>Not Found</h1>');
-  res.end();
+function notFound(response) {
+  response.setHeader('Content-Type', 'text/html');
+  response.statusCode = 404;
+  response.write('<h1>Not Found</h1>');
+  response.end();
+}
+
+function getRandomInt(min, max) {
+  const minV = Math.ceil(min);
+  const maxV = Math.floor(max);
+  return Math.floor(Math.random() * (maxV - minV + 1)) + minV;
+}
+
+function generateDiscount(callback) {
+  setTimeout(() => {
+    const discount = getRandomInt(1, 99);
+    if (discount < 20) callback(null, discount);
+    else callback(new Error('The generated discount is too big'));
+  }, 50);
+}
+
+function saleHandlerCallback(response) {
+  let i = 0;
+
+  const consoleProduct = () => {
+    const formatProducts = products.myMap((item) => {
+      item.quantity = item.quantity || 0;
+      item.price = item.price || item.priceForPair;
+
+      return item;
+    });
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify(formatProducts));
+  };
+
+  const generateSaleItemCB = (itemData) => {
+    const { item, index, arr } = itemData;
+    generateDiscount((err, res) => {
+      if (err) {
+        generateSaleItemCB(itemData);
+      } else {
+        const price = item.price || item.priceForPair;
+        const priceNum = Number(price.match(/\d+/));
+        const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+        i += 1;
+        arr[index] = { ...item, discount: disc };
+
+        if (i === arr.length) {
+          consoleProduct();
+        }
+      }
+    });
+  };
+
+  const generateSaleItem = (itemData, discounts = 1) => {
+    for (let j = 0; j < discounts; j += 1) {
+      generateSaleItemCB(itemData);
+    }
+  };
+
+  products.forEach((item, index, arr) => {
+    const itemData = { item, index, arr };
+
+    switch (true) {
+      case item.type === 'hat' && item.color === 'red':
+        generateSaleItem(itemData, 3);
+        break;
+      case item.type === 'hat':
+        generateSaleItem(itemData, 2);
+        break;
+
+      default:
+        generateSaleItem(itemData);
+        break;
+    }
+  });
 }
 
 module.exports = {
@@ -77,4 +162,5 @@ module.exports = {
   formatDataHandler,
   setDefaultData,
   notFound,
+  saleHandlerCallback,
 };
