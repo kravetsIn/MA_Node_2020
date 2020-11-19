@@ -6,6 +6,7 @@ const products = require('../products.json');
 const productsDefault = require('../products-default.json');
 const {
   tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
+  generateDiscount,
 } = require('./services');
 
 function myMapMethod(cb) {
@@ -83,20 +84,6 @@ function notFound(response) {
   response.end();
 }
 
-function getRandomInt(min, max) {
-  const minV = Math.ceil(min);
-  const maxV = Math.floor(max);
-  return Math.floor(Math.random() * (maxV - minV + 1)) + minV;
-}
-
-function generateDiscount(callback) {
-  setTimeout(() => {
-    const discount = getRandomInt(1, 99);
-    if (discount < 20) callback(null, discount);
-    else callback(new Error('The generated discount is too big'));
-  }, 50);
-}
-
 function discountHandlerCallback(response) {
   let i = 0;
 
@@ -167,7 +154,8 @@ function itemDiscountPromise(item) {
 
       return { ...item, discount: disc };
     })
-    .catch(() => {
+    .catch((error) => {
+      console.lor(error.message);
       return itemDiscountPromise(item);
     });
 }
@@ -188,7 +176,8 @@ function itemDiscountPromiseX2(item) {
 
       return item;
     })
-    .catch(() => {
+    .catch((error) => {
+      console.lor(error.message);
       return itemDiscountPromiseX2(item);
     });
 }
@@ -211,7 +200,8 @@ function itemDiscountPromiseX3(item) {
       item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
       return item;
     })
-    .catch(() => {
+    .catch((error) => {
+      console.lor(error.message);
       return itemDiscountPromiseX3(item);
     });
 }
@@ -300,7 +290,7 @@ async function asyncHandler(response) {
         formatProducts();
       }
     } catch (err) {
-      console.log(j, err.message);
+      console.log(err.message);
       asyncMyMapCB(item, index);
     }
   }

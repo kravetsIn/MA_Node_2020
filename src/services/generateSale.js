@@ -15,15 +15,15 @@ function generateDiscount(callback) {
 }
 
 // Future Callback hell
-generateDiscount((err, discount) => {
-  try {
-    if (!err) {
-      console.log(`Discount value: ${discount}`);
-    } else throw new Error(err);
-  } catch (e) {
-    console.log(e.message);
-  }
-});
+// generateDiscount((err, discount) => {
+//   try {
+//     if (!err) {
+//       console.log(`Discount value: ${discount}`);
+//     } else throw new Error(err);
+//   } catch (e) {
+//     console.log(e.message);
+//   }
+// });
 
 // Promise wrapper for callback
 const promisify = () =>
@@ -34,24 +34,24 @@ const promisify = () =>
     });
   });
 
-promisify()
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// promisify()
+//   .then((res) => {
+//     console.log(res);
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
 
 // Promise wrapper for callback, use util
 const utilPromisify = util.promisify(generateDiscount);
 
-utilPromisify()
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// utilPromisify()
+//   .then((res) => {
+//     console.log(res);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 // Async/await wrapper for callback
 async function generateDiscountAsync() {
@@ -73,8 +73,10 @@ async function asyncHandler() {
     const res = await generateDiscountAsync();
     console.log(res);
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 }
 
-asyncHandler();
+// asyncHandler();
+
+module.exports = { generateDiscount };
