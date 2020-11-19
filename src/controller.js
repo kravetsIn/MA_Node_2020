@@ -95,7 +95,7 @@ function generateDiscount(callback) {
   }, 50);
 }
 
-function saleHandlerCallback(response) {
+function discountHandlerCallback(response) {
   let i = 0;
 
   const consoleProduct = () => {
@@ -162,5 +162,5 @@ module.exports = {
   formatDataHandler,
   setDefaultData,
   notFound,
-  saleHandlerCallback,
+  discountHandlerCallback,
 };
