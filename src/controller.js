@@ -73,7 +73,7 @@ function notFound(response) {
 }
 
 function discountHandlerCallback(response) {
-  let i = 0;
+  let successIterations = 0;
 
   const consoleProduct = () => {
     const formatProducts = formatData(products);
@@ -98,12 +98,12 @@ function discountHandlerCallback(response) {
         generateSaleItemCB(itemData);
       } else {
         if (currentInc === totalInc) {
-          i += 1;
+          successIterations++;
         }
 
         arr[index] = handleSale(item, res);
 
-        if (i === arr.length) {
+        if (successIterations === arr.length) {
           consoleProduct();
         }
       }
@@ -111,8 +111,8 @@ function discountHandlerCallback(response) {
   };
 
   const generateSaleItem = (itemData, discounts = 1) => {
-    for (let j = 0; j < discounts; j++) {
-      generateSaleItemCB(itemData, j, discounts);
+    for (let increment = 0; increment < discounts; increment++) {
+      generateSaleItemCB(itemData, increment, discounts);
     }
   };
 
@@ -144,21 +144,20 @@ async function discountHandlerPromise(response) {
         return res;
       })
       .catch((error) => {
-        console.log(error.message);
-        return generateSale();
+        if (error.message === 'The generated discount is too big') return generateSale();
+        throw error;
       });
   };
 
   const ganerateSaleCounter = async (discounts) => {
-    let totalSale;
+    let totalSale = 1;
 
     const calcSale = (num) => (100 - num) / 100;
 
     for (let inc = 0; inc < discounts; inc++) {
       // eslint-disable-next-line no-await-in-loop
       const saleNum = await generateSale();
-      if (!totalSale) totalSale = calcSale(saleNum);
-      else totalSale *= calcSale(saleNum);
+      totalSale *= calcSale(saleNum);
     }
 
     return totalSale;
@@ -205,33 +204,39 @@ async function discountHandlerPromise(response) {
   });
 }
 
-function generateDiscountAsync() {
-  return new Promise((resolve, reject) => {
-    generateDiscount((err, res) => {
-      if (err) reject(err);
-      else resolve(res);
-    });
-  });
-}
-
 async function asyncHandler(response) {
+  const generateDiscountAsync = () => {
+    return new Promise((resolve, reject) => {
+      generateDiscount((err, res) => {
+        if (err) reject(err);
+        else resolve(res);
+      });
+    });
+  };
+
   const generateItemDiscount = async (item, iterations) => {
     let successIterations = 0;
+    let discount = 1;
+
+    const calcSale = (num) => (100 - num) / 100;
 
     while (successIterations < iterations) {
       try {
         // eslint-disable-next-line no-await-in-loop
         const res = await generateDiscountAsync();
         successIterations += 1;
-
-        const price = item.discount || item.price || item.priceForPair;
-        const priceNum = Number(price.match(/\d+/));
-        const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-        item.discount = disc;
+        discount *= calcSale(res);
       } catch (error) {
-        console.log(error.message);
+        if (error.message !== 'The generated discount is too big') throw error;
       }
     }
+
+    const price = item.discount || item.price || item.priceForPair;
+    const priceNum = Number(price.match(/\d+/));
+    const disc = Number(priceNum * discount).toFixed(2);
+
+    item.discount = disc;
+
     // add new price with discount in item
     return item;
   };
