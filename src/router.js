@@ -7,7 +7,7 @@ const {
   setDefaultData,
   notFound,
   discountHandlerCallback,
-  discountHandlerPromise,
+  promiseHandler,
   asyncHandler,
 } = require('./controller');
 
@@ -42,7 +42,7 @@ module.exports = (request, response) => {
       return discountHandlerCallback(response);
 
     case method === 'GET' && pathname === '/promise':
-      return discountHandlerPromise(response);
+      return promiseHandler(response);
 
     case method === 'GET' && pathname === '/async':
       return asyncHandler(response);

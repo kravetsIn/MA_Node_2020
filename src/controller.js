@@ -134,10 +134,7 @@ function discountHandlerCallback(response) {
   });
 }
 
-async function discountHandlerPromise(response) {
-  const { length: totalProducts } = products;
-  const discountProducts = [];
-
+function promiseHandler(response) {
   const generateSale = () => {
     return utilPromisify()
       .then((res) => {
@@ -149,31 +146,16 @@ async function discountHandlerPromise(response) {
       });
   };
 
-  const ganerateSaleCounter = async (discounts) => {
-    let totalSale = 1;
-
-    const calcSale = (num) => (100 - num) / 100;
-
-    for (let inc = 0; inc < discounts; inc++) {
-      // eslint-disable-next-line no-await-in-loop
-      const saleNum = await generateSale();
-      totalSale *= calcSale(saleNum);
-    }
-
-    return totalSale;
+  const repeatResolve = (prom) => {
+    return prom()
+      .then((res) => res)
+      .catch(() => repeatResolve(prom));
   };
 
-  const consoleProduct = () => {
-    const formatProducts = formatData(discountProducts);
+  const data = products.myMap((item) => {
+    const discounts = [];
 
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'application/json');
-    response.end(JSON.stringify(formatProducts));
-  };
-
-  let successIterations = 0;
-  products.forEach(async (item) => {
-    let repeats;
+    let repeats = 0;
     switch (true) {
       case item.type === 'hat' && item.color === 'red':
         repeats = 3;
@@ -187,21 +169,38 @@ async function discountHandlerPromise(response) {
         break;
     }
 
-    const generatedDiscount = await ganerateSaleCounter(repeats);
-
-    const price = item.price || item.priceForPair;
-    const priceNum = Number(price.match(/\d+/));
-    const disc = Number(priceNum * generatedDiscount).toFixed(2);
-
-    item.discount = disc;
-
-    discountProducts.push(item);
-    successIterations++;
-
-    if (successIterations === totalProducts) {
-      consoleProduct();
+    for (let i = 0; i < repeats; i++) {
+      discounts.push(repeatResolve(generateSale));
     }
+
+    return Promise.all(discounts)
+      .then((discount) => {
+        const discountNum = discount.reduce((acc, num) => {
+          return (acc * (100 - num)) / 100;
+        }, 1);
+
+        item.quantity = item.quantity || 0;
+        item.price = item.price || item.priceForPair;
+
+        const priceNum = Number(item.price.match(/\d+/));
+        const disc = Number(priceNum * discountNum).toFixed(2);
+
+        return { ...item, discount: disc };
+      })
+      .catch((error) => {
+        throw error;
+      });
   });
+
+  Promise.all(data)
+    .then((result) => {
+      response.statusCode = 200;
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify(result));
+    })
+    .catch((error) => {
+      throw error;
+    });
 }
 
 async function asyncHandler(response) {
@@ -278,6 +277,6 @@ module.exports = {
   setDefaultData,
   notFound,
   discountHandlerCallback,
-  discountHandlerPromise,
+  promiseHandler,
   asyncHandler,
 };
