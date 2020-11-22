@@ -9,18 +9,6 @@ const {
   utilPromisify,
 } = require('./services');
 
-function myMapMethod(cb) {
-  const newArray = [];
-
-  for (let i = 0; i < this.length; i++) {
-    newArray[i] = cb(this[i], i);
-  }
-
-  return newArray;
-}
-
-Array.prototype.myMap = myMapMethod;
-
 function home(response) {
   response.statusCode = 200;
   response.end('Server Works');
@@ -88,12 +76,7 @@ function discountHandlerCallback(response) {
   let i = 0;
 
   const consoleProduct = () => {
-    const formatProducts = products.myMap((item) => {
-      item.quantity = item.quantity || 0;
-      item.price = item.price || item.priceForPair;
-
-      return item;
-    });
+    const formatProducts = formatData(products);
 
     response.statusCode = 200;
     response.setHeader('Content-Type', 'application/json');
@@ -151,83 +134,75 @@ function discountHandlerCallback(response) {
   });
 }
 
-function itemDiscountPromise(item) {
-  return utilPromisify()
-    .then((res) => {
-      const { price } = item;
-      const priceNum = Number(price.match(/\d+/));
-      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-
-      return { ...item, discount: disc };
-    })
-    .catch((error) => {
-      console.lor(error.message);
-      return itemDiscountPromise(item);
-    });
-}
-
-function itemDiscountPromiseX2(item) {
-  return utilPromisify()
-    .then((res) => {
-      const { price } = item;
-      const priceNum = Number(price.match(/\d+/));
-      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-      item.discount = disc;
-
-      return utilPromisify();
-    })
-    .then((res) => {
-      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
-
-      return item;
-    })
-    .catch((error) => {
-      console.lor(error.message);
-      return itemDiscountPromiseX2(item);
-    });
-}
-
-function itemDiscountPromiseX3(item) {
-  return utilPromisify()
-    .then((res) => {
-      const { price } = item;
-      const priceNum = Number(price.match(/\d+/));
-      const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-      item.discount = disc;
-      return utilPromisify();
-    })
-    .then((res) => {
-      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
-      return utilPromisify();
-    })
-    .then((res) => {
-      item.discount = Number(item.discount * ((100 - res) / 100)).toFixed(2);
-      return item;
-    })
-    .catch((error) => {
-      console.lor(error.message);
-      return itemDiscountPromiseX3(item);
-    });
-}
-
 async function discountHandlerPromise(response) {
-  const formatProducts = formatData(products);
-  const mappedProducts = formatProducts.myMap((item) => {
+  const { length: totalProducts } = products;
+  const discountProducts = [];
+
+  const generateSale = () => {
+    return utilPromisify()
+      .then((res) => {
+        return res;
+      })
+      .catch((error) => {
+        console.log(error.message);
+        return generateSale();
+      });
+  };
+
+  const ganerateSaleCounter = async (discounts) => {
+    let totalSale;
+
+    const calcSale = (num) => (100 - num) / 100;
+
+    for (let inc = 0; inc < discounts; inc++) {
+      // eslint-disable-next-line no-await-in-loop
+      const saleNum = await generateSale();
+      if (!totalSale) totalSale = calcSale(saleNum);
+      else totalSale *= calcSale(saleNum);
+    }
+
+    return totalSale;
+  };
+
+  const consoleProduct = () => {
+    const formatProducts = formatData(discountProducts);
+
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify(formatProducts));
+  };
+
+  let successIterations = 0;
+  products.forEach(async (item) => {
+    let repeats;
     switch (true) {
       case item.type === 'hat' && item.color === 'red':
-        return itemDiscountPromiseX3(item);
-
+        repeats = 3;
+        break;
       case item.type === 'hat':
-        return itemDiscountPromiseX2(item);
+        repeats = 2;
+        break;
 
       default:
-        return itemDiscountPromise(item);
+        repeats = 1;
+        break;
+    }
+
+    const generatedDiscount = await ganerateSaleCounter(repeats);
+
+    const price = item.price || item.priceForPair;
+    const priceNum = Number(price.match(/\d+/));
+    const disc = Number(priceNum * generatedDiscount).toFixed(2);
+
+    item.discount = disc;
+
+    discountProducts.push(item);
+    successIterations++;
+
+    if (successIterations === totalProducts) {
+      consoleProduct();
     }
   });
-  const result = await Promise.all(mappedProducts);
-  response.statusCode = 200;
-  response.setHeader('Content-Type', 'application/json');
-  response.end(JSON.stringify(result));
 }
 
 function generateDiscountAsync() {
