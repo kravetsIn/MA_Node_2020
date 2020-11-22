@@ -14,6 +14,8 @@ function generateDiscount(callback) {
   }, 50);
 }
 
+const utilPromisify = util.promisify(generateDiscount);
+
 // Future Callback hell
 // generateDiscount((err, discount) => {
 //   try {
@@ -43,7 +45,6 @@ const promisify = () =>
 //   });
 
 // Promise wrapper for callback, use util
-const utilPromisify = util.promisify(generateDiscount);
 
 // utilPromisify()
 //   .then((res) => {
@@ -79,4 +80,4 @@ async function asyncHandler() {
 
 // asyncHandler();
 
-module.exports = { generateDiscount };
+module.exports = { generateDiscount, utilPromisify };

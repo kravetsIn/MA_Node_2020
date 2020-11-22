@@ -1,4 +1,4 @@
 const tasks = require('./tasks');
-const { generateDiscount } = require('./generateSale');
+const { generateDiscount, utilPromisify } = require('./generateSale');
 
-module.exports = { tasks, generateDiscount };
+module.exports = { tasks, generateDiscount, utilPromisify };

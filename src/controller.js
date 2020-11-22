@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
 
 const products = require('../products.json');
 const productsDefault = require('../products-default.json');
 const {
   tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
   generateDiscount,
+  utilPromisify,
 } = require('./services');
 
 function myMapMethod(cb) {
@@ -100,18 +100,26 @@ function discountHandlerCallback(response) {
     response.end(JSON.stringify(formatProducts));
   };
 
-  const generateSaleItemCB = (itemData) => {
+  const handleSale = (item, saleNum) => {
+    const price = item.discount || item.price || item.priceForPair;
+    const priceNum = Number(price.match(/\d+/));
+    const disc = Number(priceNum * ((100 - saleNum) / 100)).toFixed(2);
+    return { ...item, discount: disc };
+  };
+
+  const generateSaleItemCB = (itemData, currentInc = 1, totalInc = 1) => {
     const { item, index, arr } = itemData;
 
     generateDiscount((err, res) => {
       if (err) {
         generateSaleItemCB(itemData);
       } else {
-        const price = item.price || item.priceForPair;
-        const priceNum = Number(price.match(/\d+/));
-        const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-        i += 1;
-        arr[index] = { ...item, discount: disc };
+        if (currentInc === totalInc) {
+          arr[index] = handleSale(item, res);
+          i += 1;
+        } else {
+          arr[index] = handleSale(item, res);
+        }
 
         if (i === arr.length) {
           consoleProduct();
@@ -121,8 +129,8 @@ function discountHandlerCallback(response) {
   };
 
   const generateSaleItem = (itemData, discounts = 1) => {
-    for (let j = 0; j < discounts; j += 1) {
-      generateSaleItemCB(itemData);
+    for (let j = 0; j < discounts; j++) {
+      generateSaleItemCB(itemData, j, discounts);
     }
   };
 
@@ -145,7 +153,6 @@ function discountHandlerCallback(response) {
 }
 
 function itemDiscountPromise(item) {
-  const utilPromisify = util.promisify(generateDiscount);
   return utilPromisify()
     .then((res) => {
       const { price } = item;
@@ -161,7 +168,6 @@ function itemDiscountPromise(item) {
 }
 
 function itemDiscountPromiseX2(item) {
-  const utilPromisify = util.promisify(generateDiscount);
   return utilPromisify()
     .then((res) => {
       const { price } = item;
@@ -183,7 +189,6 @@ function itemDiscountPromiseX2(item) {
 }
 
 function itemDiscountPromiseX3(item) {
-  const utilPromisify = util.promisify(generateDiscount);
   return utilPromisify()
     .then((res) => {
       const { price } = item;
@@ -236,66 +241,53 @@ function generateDiscountAsync() {
 }
 
 async function asyncHandler(response) {
-  const { length } = products;
-  let j = 0;
+  const generateItemDiscount = async (item, iterations) => {
+    let successIterations = 0;
 
-  const returnData = (data) => {
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'application/json');
-    response.end(JSON.stringify(data));
-  };
+    while (successIterations < iterations) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const res = await generateDiscountAsync();
+        successIterations += 1;
 
-  const formatProducts = () => {
-    returnData(
-      products.myMap((item) => {
-        item.quantity = item.quantity || 0;
-        item.price = item.price || item.priceForPair;
-        return item;
-      }),
-    );
-  };
-
-  const generateItemDiscount = async (item) => {
-    const res = await generateDiscountAsync();
-    const price = item.price || item.priceForPair;
-    const priceNum = Number(price.match(/\d+/));
-    const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
-    return { ...item, discount: disc };
-  };
-
-  async function asyncMyMapCB(item, index) {
-    try {
-      let newItem;
-      switch (true) {
-        case item.type === 'hat' && item.color === 'red':
-          newItem = await generateItemDiscount(item);
-          newItem = await generateItemDiscount(newItem);
-          newItem = await generateItemDiscount(newItem);
-          break;
-
-        case item.type === 'hat':
-          newItem = await generateItemDiscount(item);
-          newItem = await generateItemDiscount(newItem);
-          break;
-
-        default:
-          newItem = await generateItemDiscount(item);
-          break;
+        const price = item.discount || item.price || item.priceForPair;
+        const priceNum = Number(price.match(/\d+/));
+        const disc = Number(priceNum * ((100 - res) / 100)).toFixed(2);
+        item.discount = disc;
+      } catch (error) {
+        console.log(error.message);
       }
-
-      j++;
-      products[index] = newItem;
-
-      if (j === length) {
-        formatProducts();
-      }
-    } catch (err) {
-      console.log(err.message);
-      asyncMyMapCB(item, index);
     }
-  }
+    // add new price with discount in item
+    return item;
+  };
 
-  products.forEach(asyncMyMapCB);
+  const promises = [];
+
+  products.forEach((item) => {
+    let repeats;
+    switch (true) {
+      case item.type === 'hat' && item.color === 'red':
+        repeats = 3;
+        break;
+
+      case item.type === 'hat':
+        repeats = 2;
+        break;
+
+      default:
+        repeats = 1;
+        break;
+    }
+    promises.push(generateItemDiscount(item, repeats));
+  });
+  let productsWithDiscount = await Promise.all(promises);
+
+  productsWithDiscount = formatData(productsWithDiscount);
+
+  response.statusCode = 200;
+  response.setHeader('Content-Type', 'application/json');
+  response.end(JSON.stringify(productsWithDiscount));
 }
 
 module.exports = {
