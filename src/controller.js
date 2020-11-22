@@ -115,11 +115,10 @@ function discountHandlerCallback(response) {
         generateSaleItemCB(itemData);
       } else {
         if (currentInc === totalInc) {
-          arr[index] = handleSale(item, res);
           i += 1;
-        } else {
-          arr[index] = handleSale(item, res);
         }
+
+        arr[index] = handleSale(item, res);
 
         if (i === arr.length) {
           consoleProduct();
