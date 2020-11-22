@@ -146,12 +146,6 @@ function promiseHandler(response) {
       });
   };
 
-  const repeatResolve = (prom) => {
-    return prom()
-      .then((res) => res)
-      .catch(() => repeatResolve(prom));
-  };
-
   const data = products.myMap((item) => {
     const discounts = [];
 
@@ -170,7 +164,7 @@ function promiseHandler(response) {
     }
 
     for (let i = 0; i < repeats; i++) {
-      discounts.push(repeatResolve(generateSale));
+      discounts.push(generateSale());
     }
 
     return Promise.all(discounts)
