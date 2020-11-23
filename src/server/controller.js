@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const products = require('../products.json');
-const productsDefault = require('../products-default.json');
+const products = require('../../products.json');
+const productsDefault = require('../../products-default.json');
 const {
   tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
   generateDiscount,
   utilPromisify,
-} = require('./services');
+} = require('../services');
 
 function home(response) {
   response.statusCode = 200;
