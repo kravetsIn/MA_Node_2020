@@ -1,39 +1,39 @@
-const { parse: parseQuery } = require('querystring');
 const { URL } = require('url');
 const config = require('../config');
-const router = require('./router');
+const { handleRoutes } = require('./router');
 
-module.exports = async (request, response) => {
+function getBody(body) {
+  if (body.length === 0) return {};
+
+  const bodyString = Buffer.concat(body).toString();
+
   try {
-    const origin = config.server.ORIGIN;
+    return JSON.parse(bodyString);
+  } catch (err) {
+    console.error('Failed to parse', err);
+  }
 
-    const { url } = request;
-    const parseUrl = new URL(url, origin);
-    const queryParams = parseQuery(parseUrl.search.substr(1));
+  return {};
+}
 
-    let body = [];
+function handle(request, response) {
+  try {
+    request.on('error', (err) => console.log(err));
 
-    request
-      .on('error', (err) => {
-        console.log(err);
-      })
-      .on('data', (chunk) => {
-        body.push(chunk);
-      })
-      .on('end', () => {
-        body = Buffer.concat(body).toString();
+    const bodyChunks = [];
+    request.on('data', (chunk) => bodyChunks.push(chunk));
 
-        router(
-          {
-            ...request,
-            body: body ? JSON.parse(body) : {},
-            parseUrl,
-            queryParams,
-          },
-          response,
-        );
-      });
+    request.on('end', () => {
+      const origin = config.server.ORIGIN;
+      const url = new URL(request.url, origin);
+      const body = getBody(bodyChunks);
+
+      const customRequest = { ...request, body, url };
+      handleRoutes(customRequest, response);
+    });
   } catch (error) {
     console.log(error);
   }
-};
+}
+
+module.exports = handle;

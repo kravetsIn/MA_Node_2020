@@ -1,3 +1,5 @@
+const { parse: parseQuery } = require('querystring');
+
 const {
   home,
   expensiveProduct,
@@ -11,13 +13,13 @@ const {
   asyncHandler,
 } = require('./controller');
 
-module.exports = (request, response) => {
+function handleRoutes(request, response) {
   const {
     method,
-    queryParams,
     body: data,
-    parseUrl: { pathname },
+    url: { pathname, search },
   } = request;
+  const queryParams = parseQuery(search.substr(1));
 
   switch (true) {
     case method === 'GET' && pathname === '/':
@@ -50,4 +52,6 @@ module.exports = (request, response) => {
     default:
       return notFound(response);
   }
-};
+}
+
+module.exports = { handleRoutes };
