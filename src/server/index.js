@@ -1,11 +1,12 @@
 const http = require('http');
+const config = require('../config');
 const requestHandler = require('./requestHandler');
 
 const server = http.createServer(requestHandler);
 
 function start() {
-  const port = process.env.PORT;
-  const host = process.env.HOST;
+  const port = config.server.PORT;
+  const host = config.server.HOST;
 
   server.listen(port, host, () => {
     console.log(
