@@ -3,6 +3,7 @@ const path = require('path');
 const { createGunzip } = require('zlib');
 const { promisify } = require('util');
 const { pipeline } = require('stream');
+const { nanoid } = require('nanoid');
 
 const products = require('../../products.json');
 const productsDefault = require('../../products-default.json');
@@ -271,8 +272,8 @@ async function asyncHandler(response) {
 async function uploadCsv(inputStream) {
   const gunzlib = createGunzip();
 
-  const timestamp = Date.now();
-  const filePath = `./uploads/${timestamp}.json`;
+  const filename = nanoid(10);
+  const filePath = `./uploads/${filename}.json`;
   const outputStream = fs.createWriteStream(filePath);
   const csvToJson = createCsvToJson();
 
