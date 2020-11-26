@@ -11,6 +11,7 @@ const {
   discountHandlerCallback,
   promiseHandler,
   asyncHandler,
+  uploadCsv,
 } = require('./controller');
 
 function handleRoutes(request, response) {
@@ -54,4 +55,25 @@ function handleRoutes(request, response) {
   }
 }
 
-module.exports = { handleRoutes };
+async function handleStreamRoutes(request, response) {
+  const { url, method } = request;
+
+  if (method === 'PUT' && url === '/store/csv') {
+    try {
+      await uploadCsv(request);
+    } catch (err) {
+      console.error(err);
+
+      response.setHeader('Content-type', 'application/json');
+      response.statusCode = 500;
+      response.end(JSON.stringify({ status: 'error' }));
+      return;
+    }
+  }
+
+  response.setHeader('Content-type', 'application/json');
+  response.statusCode = 200;
+  response.end(JSON.stringify({ status: 'ok' }));
+}
+
+module.exports = { handleRoutes, handleStreamRoutes };

@@ -1,5 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { createGunzip } = require('zlib');
+const { promisify } = require('util');
+const { pipeline } = require('stream');
 
 const products = require('../../products.json');
 const productsDefault = require('../../products-default.json');
@@ -8,6 +11,9 @@ const {
   generateDiscount,
   utilPromisify,
 } = require('../services');
+const { createCsvToJson } = require('../utils');
+
+const promisifiedPipeline = promisify(pipeline);
 
 function home(response) {
   response.statusCode = 200;
@@ -262,6 +268,23 @@ async function asyncHandler(response) {
   response.end(JSON.stringify(productsWithDiscount));
 }
 
+async function uploadCsv(inputStream) {
+  const gunzlib = createGunzip();
+
+  const timestamp = Date.now();
+  const filePath = `./uploads/${timestamp}.json`;
+  const outputStream = fs.createWriteStream(filePath);
+  const csvToJson = createCsvToJson();
+
+  inputStream.on('error', (err) => console.log(err));
+
+  try {
+    await promisifiedPipeline(inputStream, gunzlib, csvToJson, outputStream);
+  } catch (err) {
+    console.error('CSV pipeline failed', err);
+  }
+}
+
 module.exports = {
   home,
   expensiveProduct,
@@ -273,4 +296,5 @@ module.exports = {
   discountHandlerCallback,
   promiseHandler,
   asyncHandler,
+  uploadCsv,
 };

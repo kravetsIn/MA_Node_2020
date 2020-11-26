@@ -18,6 +18,10 @@ function getBody(body) {
 
 function handle(request, response) {
   try {
+    if (request.headers['content-type'] === 'text/csv') {
+      return;
+    }
+
     request.on('error', (err) => console.log(err));
 
     const bodyChunks = [];
