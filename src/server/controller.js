@@ -4,6 +4,9 @@ const { createGunzip } = require('zlib');
 const { promisify } = require('util');
 const { pipeline } = require('stream');
 const { nanoid } = require('nanoid');
+const {
+  path: { uploads },
+} = require('../config');
 
 const products = require('../../products.json');
 const productsDefault = require('../../products-default.json');
@@ -270,19 +273,21 @@ async function asyncHandler(response) {
 }
 
 async function uploadCsv(inputStream) {
-  const gunzlib = createGunzip();
-
-  const filename = nanoid(10);
-  const filePath = `./uploads/${filename}.json`;
-  const outputStream = fs.createWriteStream(filePath);
-  const csvToJson = createCsvToJson();
-
-  inputStream.on('error', (err) => console.log(err));
-
   try {
+    const gunzlib = createGunzip();
+
+    const filename = nanoid(16);
+
+    if (!fs.existsSync(uploads)) fs.mkdirSync(uploads);
+    const filePath = `${uploads}/${filename}.json`;
+    const outputStream = fs.createWriteStream(filePath);
+    const csvToJson = createCsvToJson();
+    inputStream.on('error', (err) => console.log(err));
+
     await promisifiedPipeline(inputStream, gunzlib, csvToJson, outputStream);
   } catch (err) {
     console.error('CSV pipeline failed', err);
+    throw err;
   }
 }
 

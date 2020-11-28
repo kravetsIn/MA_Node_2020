@@ -1,6 +1,6 @@
 const { URL } = require('url');
 const config = require('../config');
-const { handleRoutes } = require('./router');
+const { handleRoutes, handleStreamRoutes } = require('./router');
 
 function getBody(body) {
   if (body.length === 0) return {};
@@ -18,7 +18,11 @@ function getBody(body) {
 
 function handle(request, response) {
   try {
-    if (request.headers['content-type'] === 'text/csv') {
+    if (request.headers['content-type'] === 'application/csv+gzip') {
+      handleStreamRoutes(request, response).catch((err) => {
+        console.error('CSV handler failed', err);
+      });
+
       return;
     }
 
