@@ -293,8 +293,9 @@ async function uploadCsv(inputStream) {
 async function uploadsList(response) {
   try {
     const listUploadedFiles = await filesInDir(uploads);
+    const listOptimizedFiles = await filesInDir(optimize);
 
-    response.end(JSON.stringify({ listUploadedFiles }));
+    response.end(JSON.stringify({ listUploadedFiles, listOptimizedFiles }));
   } catch (err) {
     response.statusCode = 500;
     response.end('Could not read file list');
