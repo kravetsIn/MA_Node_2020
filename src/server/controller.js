@@ -15,7 +15,7 @@ const {
   generateDiscount,
   utilPromisify,
 } = require('../services');
-const { createCsvToJson } = require('../utils');
+const { createCsvToJson, filesInDir } = require('../utils');
 
 const promisifiedPipeline = promisify(pipeline);
 
@@ -278,7 +278,6 @@ async function uploadCsv(inputStream) {
 
     const filename = nanoid(16);
 
-    if (!fs.existsSync(uploads)) fs.mkdirSync(uploads);
     const filePath = `${uploads}/${filename}.json`;
     const outputStream = fs.createWriteStream(filePath);
     const csvToJson = createCsvToJson();
@@ -288,6 +287,17 @@ async function uploadCsv(inputStream) {
   } catch (err) {
     console.error('CSV pipeline failed', err);
     throw err;
+  }
+}
+
+async function uploadsList(response) {
+  try {
+    const listUploadedFiles = await filesInDir(uploads);
+
+    response.end(JSON.stringify({ listUploadedFiles }));
+  } catch (err) {
+    response.statusCode = 500;
+    response.end('Could not read file list');
   }
 }
 
@@ -303,4 +313,5 @@ module.exports = {
   promiseHandler,
   asyncHandler,
   uploadCsv,
+  uploadsList,
 };

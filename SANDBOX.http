@@ -23,6 +23,9 @@ GET http://localhost:3000/promise
 GET http://localhost:3000/async
 ###
 
+GET http://localhost:3000/store/list
+###
+
 POST http://localhost:3000/set-data HTTP/1.1
 content-type: application/json
 

@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const server = require('./server');
+const { initSetup } = require('./services');
 
 function enableGracefulExit() {
   const exitHandler = (error) => {
@@ -26,6 +27,7 @@ function enableGracefulExit() {
 }
 
 function boot() {
+  initSetup();
   enableGracefulExit();
   server.start();
 }

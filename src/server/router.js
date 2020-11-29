@@ -12,6 +12,7 @@ const {
   promiseHandler,
   asyncHandler,
   uploadCsv,
+  uploadsList,
 } = require('./controller');
 
 function handleRoutes(request, response) {
@@ -49,6 +50,9 @@ function handleRoutes(request, response) {
 
     case method === 'GET' && pathname === '/async':
       return asyncHandler(response);
+
+    case method === 'GET' && pathname === '/store/list':
+      return uploadsList(response);
 
     default:
       return notFound(response);
