@@ -13,6 +13,7 @@ const {
   asyncHandler,
   uploadCsv,
   uploadsList,
+  optimizeJson,
 } = require('./controller');
 
 function handleRoutes(request, response) {
@@ -53,6 +54,9 @@ function handleRoutes(request, response) {
 
     case method === 'GET' && pathname === '/store/list':
       return uploadsList(response);
+
+    case method === 'POST' && pathname === '/optimize':
+      return optimizeJson(data, response);
 
     default:
       return notFound(response);

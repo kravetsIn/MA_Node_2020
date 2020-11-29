@@ -34,3 +34,9 @@ content-type: application/json
     { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
 ]
 ###
+
+POST http://localhost:3000/optimize HTTP/1.1
+content-type: application/json
+
+{ "filename" : "GwLMWGfqQtw1kscR.json" }
+###

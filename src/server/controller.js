@@ -5,7 +5,7 @@ const { promisify } = require('util');
 const { pipeline } = require('stream');
 const { nanoid } = require('nanoid');
 const {
-  path: { uploads },
+  path: { uploads, optimize },
 } = require('../config');
 
 const products = require('../../products.json');
@@ -15,7 +15,7 @@ const {
   generateDiscount,
   utilPromisify,
 } = require('../services');
-const { createCsvToJson, filesInDir } = require('../utils');
+const { createCsvToJson, filesInDir, buildUniqArrayOfObject } = require('../utils');
 
 const promisifiedPipeline = promisify(pipeline);
 
@@ -301,6 +301,24 @@ async function uploadsList(response) {
   }
 }
 
+async function optimizeJson(data, response) {
+  try {
+    const { filename } = data;
+
+    const readStream = fs.createReadStream(`${uploads}/${filename}`);
+    const writeStream = fs.createWriteStream(`${optimize}/${filename}`);
+
+    const buildUniq = buildUniqArrayOfObject();
+
+    response.statusCode = 202;
+    response.end('Optimization started');
+    await promisifiedPipeline(readStream, buildUniq, writeStream);
+  } catch (err) {
+    console.log('Optimization failed', err);
+    throw err;
+  }
+}
+
 module.exports = {
   home,
   expensiveProduct,
@@ -314,4 +332,5 @@ module.exports = {
   asyncHandler,
   uploadCsv,
   uploadsList,
+  optimizeJson,
 };
