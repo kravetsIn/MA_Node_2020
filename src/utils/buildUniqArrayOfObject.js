@@ -32,7 +32,7 @@ function buildUniqArrayOfObject() {
     lastStr = strArray.pop();
 
     getUniqItem(strArray);
-    callback(null, null);
+    callback();
   };
 
   const flush = (callback) => {

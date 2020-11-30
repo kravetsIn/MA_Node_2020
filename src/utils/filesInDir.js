@@ -1,12 +1,7 @@
-const fs = require('fs');
-const { promisify } = require('util');
+const { promises: fs } = require('fs');
 
 async function filesInDir(dirPath) {
-  const readdirPromisified = promisify(fs.readdir);
-  const statPromisified = promisify(fs.stat);
-  const lstatPromisified = promisify(fs.lstat);
-
-  const files = await readdirPromisified(dirPath);
+  const files = await fs.readdir(dirPath);
   const listFiles = {
     isEmpty: true,
     list: [],
@@ -14,13 +9,19 @@ async function filesInDir(dirPath) {
   };
 
   if (files.length) {
-    const onlyFilesInDir = files.filter(async (file) => {
-      const stat = await lstatPromisified(`${dirPath}/${file}`);
-      return stat.isFile();
+    let onlyFilesInDir = files.map(async (file) => {
+      const stat = await fs.lstat(`${dirPath}/${file}`);
+      return { isFile: stat.isFile(), file };
     });
 
+    onlyFilesInDir = await Promise.all(onlyFilesInDir);
+    onlyFilesInDir = onlyFilesInDir.reduce((acc, obj) => {
+      if (obj.isFile) acc.push(obj.file);
+      return acc;
+    }, []);
+
     const filesInfo = onlyFilesInDir.map(async (file) => {
-      const { size, birthtime } = await statPromisified(`${dirPath}/${file}`);
+      const { size, birthtime } = await fs.stat(`${dirPath}/${file}`);
       return { filename: file, size, birthtime };
     });
 
