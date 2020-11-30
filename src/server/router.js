@@ -1,3 +1,5 @@
+const { parse: parseQuery } = require('querystring');
+
 const {
   home,
   expensiveProduct,
@@ -9,15 +11,18 @@ const {
   discountHandlerCallback,
   promiseHandler,
   asyncHandler,
+  uploadCsv,
+  uploadsList,
+  optimizeJson,
 } = require('./controller');
 
-module.exports = (request, response) => {
+function handleRoutes(request, response) {
   const {
     method,
-    queryParams,
     body: data,
-    parseUrl: { pathname },
+    url: { pathname, search },
   } = request;
+  const queryParams = parseQuery(search.substr(1));
 
   switch (true) {
     case method === 'GET' && pathname === '/':
@@ -47,7 +52,36 @@ module.exports = (request, response) => {
     case method === 'GET' && pathname === '/async':
       return asyncHandler(response);
 
+    case method === 'GET' && pathname === '/store/list':
+      return uploadsList(response);
+
+    case method === 'POST' && pathname === '/optimize':
+      return optimizeJson(data, response);
+
     default:
       return notFound(response);
   }
-};
+}
+
+async function handleStreamRoutes(request, response) {
+  const { url, method } = request;
+
+  if (method === 'PUT' && url === '/store/csv') {
+    try {
+      await uploadCsv(request);
+    } catch (err) {
+      console.error(err);
+
+      response.setHeader('Content-type', 'application/json');
+      response.statusCode = 500;
+      response.end(JSON.stringify({ status: 'error' }));
+      return;
+    }
+  }
+
+  response.setHeader('Content-type', 'application/json');
+  response.statusCode = 200;
+  response.end(JSON.stringify({ status: 'ok' }));
+}
+
+module.exports = { handleRoutes, handleStreamRoutes };

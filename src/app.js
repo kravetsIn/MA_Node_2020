@@ -1,7 +1,35 @@
 require('dotenv').config();
-const http = require('http');
-const requestHandler = require('./requestHandler');
 
-const server = http.createServer(requestHandler);
+const server = require('./server');
+const { initSetup } = require('./services');
 
-server.listen(process.env.PORT);
+function enableGracefulExit() {
+  const exitHandler = (error) => {
+    if (error) console.error(error);
+
+    console.log('Gracefully stopping...');
+    server.stop(() => {
+      process.exit();
+    });
+  };
+
+  // Catches ctrl+c event
+  process.on('SIGINT', exitHandler);
+  process.on('SIGTERM', exitHandler);
+
+  // Catches "kill pid"
+  process.on('SIGUSR1', exitHandler);
+  process.on('SIGUSR2', exitHandler);
+
+  // Catches uncaught/unhandled exceptions
+  process.on('uncaughtException', exitHandler);
+  process.on('unhandledRejection', exitHandler);
+}
+
+function boot() {
+  initSetup();
+  enableGracefulExit();
+  server.start();
+}
+
+boot();

@@ -1,13 +1,23 @@
 const fs = require('fs');
 const path = require('path');
+const { createGunzip } = require('zlib');
+const { promisify } = require('util');
+const { pipeline } = require('stream');
+const { nanoid } = require('nanoid');
+const {
+  path: { uploads, optimize },
+} = require('../config');
 
-const products = require('../products.json');
-const productsDefault = require('../products-default.json');
+const products = require('../../products.json');
+const productsDefault = require('../../products-default.json');
 const {
   tasks: { task1: filter, task2: mostExpensiveProduct, task3: formatData },
   generateDiscount,
   utilPromisify,
-} = require('./services');
+} = require('../services');
+const { createCsvToJson, filesInDir, buildUniqArrayOfObject } = require('../utils');
+
+const promisifiedPipeline = promisify(pipeline);
 
 function home(response) {
   response.statusCode = 200;
@@ -262,6 +272,54 @@ async function asyncHandler(response) {
   response.end(JSON.stringify(productsWithDiscount));
 }
 
+async function uploadCsv(inputStream) {
+  try {
+    const gunzlib = createGunzip();
+
+    const filename = nanoid(16);
+
+    const filePath = `${uploads}/${filename}.json`;
+    const outputStream = fs.createWriteStream(filePath);
+    const csvToJson = createCsvToJson();
+    inputStream.on('error', (err) => console.log(err));
+
+    await promisifiedPipeline(inputStream, gunzlib, csvToJson, outputStream);
+  } catch (err) {
+    console.error('CSV pipeline failed', err);
+    throw err;
+  }
+}
+
+async function uploadsList(response) {
+  try {
+    const listUploadedFiles = await filesInDir(uploads);
+    const listOptimizedFiles = await filesInDir(optimize);
+
+    response.end(JSON.stringify({ listUploadedFiles, listOptimizedFiles }));
+  } catch (err) {
+    response.statusCode = 500;
+    response.end('Could not read file list');
+  }
+}
+
+async function optimizeJson(data, response) {
+  try {
+    const { filename } = data;
+
+    const readStream = fs.createReadStream(`${uploads}/${filename}`);
+    const writeStream = fs.createWriteStream(`${optimize}/${filename}`);
+
+    const buildUniq = buildUniqArrayOfObject();
+
+    response.statusCode = 202;
+    response.end('Optimization started');
+    await promisifiedPipeline(readStream, buildUniq, writeStream);
+  } catch (err) {
+    console.log('Optimization failed', err);
+    throw err;
+  }
+}
+
 module.exports = {
   home,
   expensiveProduct,
@@ -273,4 +331,7 @@ module.exports = {
   discountHandlerCallback,
   promiseHandler,
   asyncHandler,
+  uploadCsv,
+  uploadsList,
+  optimizeJson,
 };

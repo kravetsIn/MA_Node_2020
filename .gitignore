@@ -6,3 +6,9 @@ node_modules
 # Editor directories and files
 .idea
 .vscode
+
+# Uploads
+uploads
+
+# Other files
+csv-files

@@ -23,6 +23,9 @@ GET http://localhost:3000/promise
 GET http://localhost:3000/async
 ###
 
+GET http://localhost:3000/store/list
+###
+
 POST http://localhost:3000/set-data HTTP/1.1
 content-type: application/json
 
@@ -30,4 +33,10 @@ content-type: application/json
     { "type": "socks", "color": "red", "quantity": "10", "priceForPair": "$3" },
     { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
 ]
+###
+
+POST http://localhost:3000/optimize HTTP/1.1
+content-type: application/json
+
+{ "filename" : "GwLMWGfqQtw1kscR.json" }
 ###
