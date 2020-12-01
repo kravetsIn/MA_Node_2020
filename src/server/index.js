@@ -1,33 +1,13 @@
-const http = require('http');
-const config = require('../config');
-const requestHandler = require('./requestHandler');
+const express = require('express');
 
-const server = http.createServer(requestHandler);
+const app = express();
 
-function start() {
-  const port = config.server.PORT;
-  const host = config.server.HOST;
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-  server.listen(port, host, () => {
-    console.log(
-      `Server started: [${server.address().address}]:${server.address().port} (${
-        process.env.NODE_ENV
-      })`,
-    );
-  });
-}
+app.get('/ping', (req, res) => {
+  res.send('Pong!');
+});
 
-function stop(callback) {
-  server.close((err) => {
-    if (err) {
-      console.log(err, 'Failed to close server!');
-      callback();
-      return;
-    }
-
-    console.log('Server has beeb stopped');
-    callback();
-  });
-}
-
-module.exports = { start, stop };
+module.exports = { app };

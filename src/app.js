@@ -1,14 +1,34 @@
-require('dotenv').config();
-
-const server = require('./server');
+const { app } = require('./server');
 const { initSetup } = require('./services');
 
-function enableGracefulExit() {
+const {
+  server: { PORT, HOST, NODE_ENV },
+} = require('./config');
+
+const serverInit = () => {
+  const server = app.listen(PORT, HOST, () => {
+    const { address } = server.address();
+    console.log(`Server started: http://${address}:${PORT} (${NODE_ENV})`);
+  });
+
+  const stop = (callback) => {
+    server.close((err) => {
+      if (err) {
+        console.log(err, 'Failed to close server!');
+        callback();
+        return;
+      }
+
+      console.log('Server has beeb stopped');
+      callback();
+    });
+  };
+
   const exitHandler = (error) => {
     if (error) console.error(error);
 
     console.log('Gracefully stopping...');
-    server.stop(() => {
+    stop(() => {
       process.exit();
     });
   };
@@ -24,12 +44,11 @@ function enableGracefulExit() {
   // Catches uncaught/unhandled exceptions
   process.on('uncaughtException', exitHandler);
   process.on('unhandledRejection', exitHandler);
-}
+};
 
-function boot() {
+const boot = () => {
   initSetup();
-  enableGracefulExit();
-  server.start();
-}
+  serverInit();
+};
 
 boot();
