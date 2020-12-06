@@ -40,10 +40,10 @@ content-type: application/json
 }
 ###
 
-POST http://localhost:3000/optimize HTTP/1.1
+POST http://localhost:3000/store/optimize HTTP/1.1
 content-type: application/json
 
-{ "filename" : "GwLMWGfqQtw1kscR.json" }
+{ "filename" : "zB8pIzE5h5A9Y9b7.json" }
 ###
 
 

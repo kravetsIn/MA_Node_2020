@@ -34,11 +34,11 @@ function handleRoutes(request, response) {
     // case method === 'GET' && pathname === '/max':
     //   return expensiveProduct(response);
 
-    case method === 'GET' && pathname === '/set-default':
-      return setDefaultData(response);
+    // case method === 'GET' && pathname === '/set-default':
+    //   return setDefaultData(response);
 
-    case method === 'POST' && pathname === '/set-data':
-      return setData(data, response, queryParams);
+    // case method === 'POST' && pathname === '/set-data':
+    //   return setData(data, response, queryParams);
 
     // case method === 'GET' && pathname === '/format-data':
     //   return formatDataHandler(response, queryParams);

@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
       return res.status(403).json({ error: 'Access is denied!' });
 
     case 404:
-      return res.status(404).write('<h1>Not Found</h1>');
+      return res.status(404).json({ error: 'Not Found' });
 
     case 500:
       return res.status(500).json({ error: 'Server Error!' });

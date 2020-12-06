@@ -5,6 +5,7 @@ const { auth, errorHandler } = require('./middlewares');
 const task = require('./routes/task');
 const discount = require('./routes/discount');
 const products = require('./routes/products');
+const store = require('./routes/store');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
 app.use('/task', task);
 app.use('/discount', discount);
 app.use('/products', products);
+app.use('/store', store);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
