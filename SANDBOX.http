@@ -4,7 +4,7 @@ Authorization: Basic TWFzdGVyczpBY2FkZW15
 
 ###
 
-GET http://localhost:3000/set-default
+GET http://localhost:3000/products/store/default
 ###
 
 GET http://localhost:3000/task/max
@@ -29,13 +29,15 @@ GET http://localhost:3000/discount/async
 GET http://localhost:3000/store/list
 ###
 
-POST http://localhost:3000/set-data HTTP/1.1
+POST http://localhost:3000/products/store/set-products HTTP/1.1
 content-type: application/json
 
-[
+{
+"data" : [
     { "type": "socks", "color": "red", "quantity": "10", "priceForPair": "$3" },
     { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
 ]
+}
 ###
 
 POST http://localhost:3000/optimize HTTP/1.1

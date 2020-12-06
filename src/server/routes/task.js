@@ -2,7 +2,7 @@ const express = require('express');
 
 const products = require('../../../products.json');
 const {
-  tasks: { task1: filterProducts, task2: mostExpensiveProduct, task3: formatProducts },
+  task: { task1: filterProducts, task2: mostExpensiveProduct, task3: formatProducts },
 } = require('../../services');
 
 const task = express.Router();
