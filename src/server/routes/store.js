@@ -2,10 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const { promisify } = require('util');
 const { pipeline } = require('stream');
-// const path = require('path');
 
 const { uploads, optimize } = require('../../config/path');
-const { uploadCsv } = require('../../services/store');
+const {
+  store: { uploadCsv },
+} = require('../../services');
 const { filesInDir, buildUniqArrayOfObject } = require('../../utils');
 
 const promisifiedPipeline = promisify(pipeline);
