@@ -1,17 +1,20 @@
 # root
-GET http://localhost:3000/
+GET http://localhost:3000/ping
+Authorization: Basic TWFzdGVyczpBY2FkZW15
+
 ###
 
 GET http://localhost:3000/set-default
 ###
 
-GET http://localhost:3000/max
+GET http://localhost:3000/task/max
+
 ###
 
-GET http://localhost:3000/filter?field=type&value=socks
+GET http://localhost:3000/task/filter?field=type&value=socks
 ###
 
-GET http://localhost:3000/format-data?field=type&value=socks
+GET http://localhost:3000/task/format?field=type&value=socks
 ###
 
 GET http://localhost:3000/callback
@@ -39,4 +42,11 @@ POST http://localhost:3000/optimize HTTP/1.1
 content-type: application/json
 
 { "filename" : "GwLMWGfqQtw1kscR.json" }
+###
+
+
+POST http://localhost:3000/ HTTP/1.1 
+Authorization: Basic TWFzdGVyczpBY2FkZW15
+ 
+
 ###

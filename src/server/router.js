@@ -28,11 +28,11 @@ function handleRoutes(request, response) {
     case method === 'GET' && pathname === '/':
       return home(response);
 
-    case method === 'GET' && pathname === '/filter':
-      return filterData(response, queryParams);
+    // case method === 'GET' && pathname === '/filter':
+    //   return filterData(response, queryParams);
 
-    case method === 'GET' && pathname === '/max':
-      return expensiveProduct(response);
+    // case method === 'GET' && pathname === '/max':
+    //   return expensiveProduct(response);
 
     case method === 'GET' && pathname === '/set-default':
       return setDefaultData(response);
@@ -40,8 +40,8 @@ function handleRoutes(request, response) {
     case method === 'POST' && pathname === '/set-data':
       return setData(data, response, queryParams);
 
-    case method === 'GET' && pathname === '/format-data':
-      return formatDataHandler(response, queryParams);
+    // case method === 'GET' && pathname === '/format-data':
+    //   return formatDataHandler(response, queryParams);
 
     case method === 'GET' && pathname === '/callback':
       return discountHandlerCallback(response);
