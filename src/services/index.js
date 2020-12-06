@@ -1,5 +1,5 @@
-const tasks = require('./tasks');
-const { generateDiscount, utilPromisify } = require('./generateSale');
+const task = require('./tasks');
+const discount = require('./discount');
 const initSetup = require('./initAppSetup');
 
-module.exports = { tasks, generateDiscount, utilPromisify, initSetup };
+module.exports = { discount, task, initSetup };

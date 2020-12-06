@@ -17,13 +17,13 @@ GET http://localhost:3000/task/filter?field=type&value=socks
 GET http://localhost:3000/task/format?field=type&value=socks
 ###
 
-GET http://localhost:3000/callback
+GET http://localhost:3000/discount/callback
 ###
 
-GET http://localhost:3000/promise
+GET http://localhost:3000/discount/promise
 ###
 
-GET http://localhost:3000/async
+GET http://localhost:3000/discount/async
 ###
 
 GET http://localhost:3000/store/list

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const { auth, errorHandler } = require('./middlewares');
 const task = require('./routes/task');
+const discount = require('./routes/discount');
 
 const app = express();
 
@@ -13,9 +14,10 @@ app.use(
   }),
 );
 
-app.use(auth);
+// app.use(auth);
 
 app.use('/task', task);
+app.use('/discount', discount);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
