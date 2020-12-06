@@ -28,6 +28,14 @@ store.post('/optimize', async (req, res, next) => {
   try {
     const { filename } = req.body;
 
+    const hasFile = fs.existsSync(`${uploads}/${filename}`);
+
+    if (!hasFile) {
+      const err = new Error('The file does not exist');
+      err.statusCode = 400;
+      throw err;
+    }
+
     const readStream = fs.createReadStream(`${uploads}/${filename}`);
     const writeStream = fs.createWriteStream(`${optimize}/${filename}`);
 

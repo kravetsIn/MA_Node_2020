@@ -1,3 +1,7 @@
+const notFound = (req, res) => {
+  res.status(404).send('Sorry cant find that!');
+};
+
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   if (!err.statusCode) err.statusCode = 500;
@@ -17,4 +21,4 @@ const errorHandler = (err, req, res, next) => {
   }
 };
 
-module.exports = errorHandler;
+module.exports = { errorHandler, notFound };

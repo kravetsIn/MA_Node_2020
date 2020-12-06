@@ -1,6 +1,6 @@
 const { Transform } = require('stream');
 
-function buildUniqArrayOfObject() {
+const buildUniqArrayOfObject = () => {
   const uniqItems = {};
   let lastStr = '';
 
@@ -53,6 +53,6 @@ function buildUniqArrayOfObject() {
   };
 
   return new Transform({ transform, flush });
-}
+};
 
 module.exports = buildUniqArrayOfObject;

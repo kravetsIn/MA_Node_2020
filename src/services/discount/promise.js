@@ -3,7 +3,7 @@ const { generateDiscount } = require('./utils');
 
 const utilPromisify = util.promisify(generateDiscount);
 
-function promiseHandler(products) {
+const promiseHandler = (products) => {
   const generateSale = () => {
     return utilPromisify()
       .then((res) => {
@@ -56,6 +56,6 @@ function promiseHandler(products) {
   });
 
   return Promise.all(data);
-}
+};
 
 module.exports = promiseHandler;

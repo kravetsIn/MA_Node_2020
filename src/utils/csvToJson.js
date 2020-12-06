@@ -1,6 +1,6 @@
 const { Transform } = require('stream');
 
-function jsonGenerator(array, keys) {
+const jsonGenerator = (array, keys) => {
   return array.reduce((acc, red) => {
     const jsonString = red.split(',').map((item, index) => {
       // eslint-disable-next-line no-restricted-globals
@@ -19,9 +19,9 @@ function jsonGenerator(array, keys) {
 
     return `${acc},\n\t{${jsonString} }`;
   }, '');
-}
+};
 
-function createCsvToJson() {
+const createCsvToJson = () => {
   let isFirst = true;
   let keys = [];
   let lastStr = '';
@@ -49,6 +49,6 @@ function createCsvToJson() {
     callback(null, '\n]');
   };
   return new Transform({ transform, flush });
-}
+};
 
 module.exports = createCsvToJson;

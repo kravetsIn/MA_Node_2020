@@ -45,7 +45,9 @@ task.get('/format', async (req, res, next) => {
     }
 
     const filterRes = filterProducts(products, field, value);
+    console.log(filterRes);
     const product = formatProducts(filterRes);
+    console.log(product);
 
     res.json(product);
   } catch (err) {

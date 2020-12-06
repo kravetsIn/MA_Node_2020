@@ -1,7 +1,7 @@
 const { task3: formatData } = require('../tasks');
 const { generateDiscount } = require('./utils');
 
-function discountHandlerCallback(products, cb) {
+const discountHandlerCallback = (products, cb) => {
   let successIterations = 0;
 
   const consoleProduct = () => {
@@ -59,6 +59,6 @@ function discountHandlerCallback(products, cb) {
         break;
     }
   });
-}
+};
 
 module.exports = discountHandlerCallback;

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { auth, errorHandler } = require('./middlewares');
+const { auth, errorHandler, notFound } = require('./middlewares');
 const task = require('./routes/task');
 const discount = require('./routes/discount');
 const products = require('./routes/products');
@@ -16,17 +16,17 @@ app.use(
   }),
 );
 
-// app.use(auth);
-
-app.use('/task', task);
-app.use('/discount', discount);
-app.use('/products', products);
-app.use('/store', store);
+app.use(auth);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.use('/task', task);
+app.use('/discount', discount);
+app.use('/products', products);
+app.use('/store', store);
+app.use(notFound);
 app.use(errorHandler);
 
 module.exports = { app };

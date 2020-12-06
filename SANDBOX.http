@@ -1,14 +1,9 @@
 # root
-GET http://localhost:3000/ping
+GET http://localhost:3000/
 Authorization: Basic TWFzdGVyczpBY2FkZW15
-
-###
-
-GET http://localhost:3000/products/store/default
 ###
 
 GET http://localhost:3000/task/max
-
 ###
 
 GET http://localhost:3000/task/filter?field=type&value=socks
@@ -26,29 +21,25 @@ GET http://localhost:3000/discount/promise
 GET http://localhost:3000/discount/async
 ###
 
-GET http://localhost:3000/store/list
+GET http://localhost:3000/products/store/default
 ###
 
 POST http://localhost:3000/products/store/set-products HTTP/1.1
 content-type: application/json
 
 {
-"data" : [
+  "data" : [
     { "type": "socks", "color": "red", "quantity": "10", "priceForPair": "$3" },
     { "type": "socks", "color": "green", "quantity": "5", "priceForPair": "$10" }
-]
+  ]
 }
+###
+
+GET http://localhost:3000/store/list
 ###
 
 POST http://localhost:3000/store/optimize HTTP/1.1
 content-type: application/json
 
-{ "filename" : "zB8pIzE5h5A9Y9b7.json" }
-###
-
-
-POST http://localhost:3000/ HTTP/1.1 
-Authorization: Basic TWFzdGVyczpBY2FkZW15
- 
-
+{ "filename" : "example_name.json" }
 ###

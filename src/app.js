@@ -46,7 +46,7 @@ const serverInit = () => {
   process.on('unhandledRejection', exitHandler);
 };
 
-const boot = () => {
+const boot = async () => {
   initSetup();
   serverInit();
 };

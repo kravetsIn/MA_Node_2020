@@ -1,7 +1,7 @@
 const { task3: formatData } = require('../tasks');
 const { generateDiscount } = require('./utils');
 
-async function asyncHandler(products) {
+const asyncHandler = async (products) => {
   const generateDiscountAsync = () => {
     return new Promise((resolve, reject) => {
       generateDiscount((err, res) => {
@@ -62,6 +62,6 @@ async function asyncHandler(products) {
   productsWithDiscount = formatData(productsWithDiscount);
 
   return productsWithDiscount;
-}
+};
 
 module.exports = asyncHandler;
