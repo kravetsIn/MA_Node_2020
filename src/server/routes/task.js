@@ -7,7 +7,7 @@ const {
 
 const task = express.Router();
 
-task.get('/filter', async (req, res, next) => {
+task.get('/filter', (req, res, next) => {
   try {
     const { field, value } = req.query;
 
@@ -25,7 +25,7 @@ task.get('/filter', async (req, res, next) => {
   }
 });
 
-task.get('/max', async (req, res, next) => {
+task.get('/max', (req, res, next) => {
   try {
     res.json(mostExpensiveProduct);
   } catch (err) {
@@ -34,7 +34,7 @@ task.get('/max', async (req, res, next) => {
   }
 });
 
-task.get('/format', async (req, res, next) => {
+task.get('/format', (req, res, next) => {
   try {
     const { field, value } = req.query;
 

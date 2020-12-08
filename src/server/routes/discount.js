@@ -7,7 +7,7 @@ const products = require('../../../products.json');
 
 const discount = express.Router();
 
-discount.get('/callback', async (req, res, next) => {
+discount.get('/callback', (req, res, next) => {
   try {
     discountHandlerCallback(products, (err, result) => {
       if (err) throw err;
@@ -20,7 +20,7 @@ discount.get('/callback', async (req, res, next) => {
   }
 });
 
-discount.get('/promise', async (req, res, next) => {
+discount.get('/promise', (req, res, next) => {
   try {
     promiseHandler(products)
       .then((result) => {

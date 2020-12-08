@@ -2,10 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { auth, errorHandler, notFound } = require('./middlewares');
-const task = require('./routes/task');
-const discount = require('./routes/discount');
-const products = require('./routes/products');
-const store = require('./routes/store');
+const { task, discount, products, store } = require('./routes');
 
 const app = express();
 

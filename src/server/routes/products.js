@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
+const { promises: fs } = require('fs');
 
 const defaultProducts = require('../../../products-default.json');
 
@@ -8,7 +8,7 @@ const products = express.Router();
 
 products.get('/store/default', async (req, res, next) => {
   try {
-    fs.writeFileSync(path.resolve('products.json'), JSON.stringify(defaultProducts));
+    await fs.writeFile(path.resolve('products.json'), JSON.stringify(defaultProducts));
     res.send('Default data set successfully');
   } catch (err) {
     console.log('ERROR:', err.message || err);
@@ -32,7 +32,7 @@ products.post('/store/set-products', async (req, res, next) => {
       throw err;
     }
 
-    fs.writeFileSync(path.resolve('products.json'), JSON.stringify(data));
+    await fs.writeFile(path.resolve('products.json'), JSON.stringify(data));
     res.send('Products updated');
   } catch (err) {
     console.log('ERROR:', err.message || err);

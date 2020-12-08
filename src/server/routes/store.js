@@ -10,6 +10,7 @@ const {
 const { filesInDir, buildUniqArrayOfObject } = require('../../utils');
 
 const promisifiedPipeline = promisify(pipeline);
+const promisifiedFsAccess = promisify(fs.access);
 
 const store = express.Router();
 
@@ -28,22 +29,22 @@ store.get('/list', async (req, res, next) => {
 store.post('/optimize', async (req, res, next) => {
   try {
     const { filename } = req.body;
+    const filepath = `${uploads}/${filename}`;
 
-    const hasFile = fs.existsSync(`${uploads}/${filename}`);
+    promisifiedFsAccess(filepath, fs.constants.R_OK)
+      .then(async () => {
+        const readStream = fs.createReadStream(filepath);
+        const writeStream = fs.createWriteStream(`${optimize}/${filename}`);
 
-    if (!hasFile) {
-      const err = new Error('The file does not exist');
-      err.statusCode = 400;
-      throw err;
-    }
+        const buildUniq = buildUniqArrayOfObject();
 
-    const readStream = fs.createReadStream(`${uploads}/${filename}`);
-    const writeStream = fs.createWriteStream(`${optimize}/${filename}`);
-
-    const buildUniq = buildUniqArrayOfObject();
-
-    res.status(202).json({ message: 'Optimization started' });
-    await promisifiedPipeline(readStream, buildUniq, writeStream);
+        res.status(202).json({ message: 'Optimization started' });
+        await promisifiedPipeline(readStream, buildUniq, writeStream);
+      })
+      .catch((err) => {
+        err.statusCode = 400;
+        throw err;
+      });
   } catch (err) {
     console.log('ERROR:', err.message || err);
     next(err);
