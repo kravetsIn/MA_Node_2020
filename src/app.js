@@ -1,6 +1,10 @@
+const http = require('http');
+
 const { app } = require('./server');
 const { initSetup } = require('./services');
 const { enableGracefulExit } = require('./utils');
+
+const server = http.createServer(app);
 
 const {
   server: { PORT, HOST, NODE_ENV },
@@ -8,7 +12,7 @@ const {
 
 const boot = async () => {
   initSetup();
-  const server = app.listen(PORT, HOST, () => {
+  server.listen(PORT, HOST, () => {
     const { address } = server.address();
     console.log(`Server started: http://${address}:${PORT} (${NODE_ENV})`);
   });
