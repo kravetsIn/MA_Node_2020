@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs');
 
-async function filesInDir(dirPath) {
+const filesInDir = async (dirPath) => {
   const files = await fs.readdir(dirPath);
   const listFiles = {
     isEmpty: true,
@@ -32,6 +32,6 @@ async function filesInDir(dirPath) {
   }
 
   return listFiles;
-}
+};
 
 module.exports = filesInDir;

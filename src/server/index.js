@@ -1,33 +1,29 @@
-const http = require('http');
-const config = require('../config');
-const requestHandler = require('./requestHandler');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-const server = http.createServer(requestHandler);
+const { auth, errorHandler, notFound } = require('./middlewares');
+const { task, discount, products, store } = require('./routes');
 
-function start() {
-  const port = config.server.PORT;
-  const host = config.server.HOST;
+const app = express();
 
-  server.listen(port, host, () => {
-    console.log(
-      `Server started: [${server.address().address}]:${server.address().port} (${
-        process.env.NODE_ENV
-      })`,
-    );
-  });
-}
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+);
 
-function stop(callback) {
-  server.close((err) => {
-    if (err) {
-      console.log(err, 'Failed to close server!');
-      callback();
-      return;
-    }
+app.use(auth);
 
-    console.log('Server has beeb stopped');
-    callback();
-  });
-}
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-module.exports = { start, stop };
+app.use('/task', task);
+app.use('/discount', discount);
+app.use('/products', products);
+app.use('/store', store);
+app.use(notFound);
+app.use(errorHandler);
+
+module.exports = { app };

@@ -1,4 +1,4 @@
-function task1(data, key, value) {
+const task1 = (data, key, value) => {
   if (!Array.isArray(data)) {
     throw new Error('"data" must be a array');
   }
@@ -8,6 +8,6 @@ function task1(data, key, value) {
   }
 
   return data.filter((item) => item[key] === value);
-}
+};
 
 module.exports = task1;
