@@ -1,6 +1,8 @@
-const enableGracefulExit = (server) => {
-  const exitHandler = (error) => {
+const enableGracefulExit = (server, db) => {
+  const exitHandler = async (error) => {
     if (error) console.error(error);
+
+    if (db) await db.close();
 
     server.close((err) => {
       if (err) console.error('ERROR: Server shutdown error!', err);
