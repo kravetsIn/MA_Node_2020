@@ -1,5 +1,7 @@
 const { Pool } = require('pg');
 
+const { db: dbConfig } = require('../config');
+
 const db = (config) => {
   try {
     const client = new Pool(config);
@@ -118,4 +120,4 @@ const db = (config) => {
   }
 };
 
-module.exports = db;
+module.exports = db(dbConfig);

@@ -2,19 +2,18 @@ const http = require('http');
 
 const {
   server: { PORT, HOST, NODE_ENV },
-  db: dbConfig,
 } = require('./config');
 const { app } = require('./server');
 const { initSetup } = require('./services');
 const { enableGracefulExit } = require('./utils');
-const db = require('./db')(dbConfig);
+const db = require('./db');
 
 const server = http.createServer(app);
 
 const boot = async () => {
   try {
-    // await db.testConnection();
     enableGracefulExit(server, db);
+    await db.testConnection();
     initSetup();
 
     server.listen(PORT, HOST, () => {
