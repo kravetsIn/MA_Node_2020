@@ -14,7 +14,7 @@ const boot = async () => {
   try {
     enableGracefulExit(server, db);
     await db.testConnection();
-    initSetup();
+    await initSetup();
 
     server.listen(PORT, HOST, () => {
       const { address } = server.address();

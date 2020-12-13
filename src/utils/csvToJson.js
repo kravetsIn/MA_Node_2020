@@ -1,6 +1,6 @@
 const { Transform } = require('stream');
 
-const jsonGenerator = (array, keys) => {
+const jsonGenerator = (array, keys, onlyPrice) => {
   return array.reduce((acc, red) => {
     const jsonString = red.split(',').map((item, index) => {
       // eslint-disable-next-line no-restricted-globals
@@ -10,7 +10,7 @@ const jsonGenerator = (array, keys) => {
     });
 
     // Replace price if isPair: true
-    if (jsonString[4] === '"isPair":true') {
+    if (jsonString[4] === '"isPair":true' && !onlyPrice) {
       jsonString[3] = `"priceForPair":${jsonString[3].split(':')[1]}`;
     }
 
@@ -21,7 +21,7 @@ const jsonGenerator = (array, keys) => {
   }, '');
 };
 
-const createCsvToJson = () => {
+const createCsvToJson = ({ onlyPrice = false }) => {
   let isFirst = true;
   let keys = [];
   let lastStr = '';
@@ -36,13 +36,13 @@ const createCsvToJson = () => {
     if (isFirst) {
       keys = strArray.shift().split(',');
       // creating json and removing comma on first line
-      const json = jsonGenerator(strArray, keys).slice(1);
+      const json = jsonGenerator(strArray, keys, onlyPrice).slice(1);
       callback(null, `[${json}`);
       isFirst = false;
       return;
     }
 
-    callback(null, jsonGenerator(strArray, keys));
+    callback(null, jsonGenerator(strArray, keys, onlyPrice));
   };
 
   const flush = (callback) => {
