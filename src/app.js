@@ -12,8 +12,13 @@ const server = http.createServer(app);
 
 const boot = async () => {
   try {
+    await db.init();
+    console.log(`Now DB type is ${db.getType()}`);
+
+    // db.setType('knex');
+    // console.log(`Now DB type is ${db.getType()}`);
+
     enableGracefulExit(server, db);
-    await db.testConnection();
     await initSetup();
 
     server.listen(PORT, HOST, () => {
