@@ -13,7 +13,7 @@ app.use(
   }),
 );
 
-app.use(auth);
+// app.use(auth);
 app.use('/', routes);
 app.use(notFound);
 app.use(errorHandler);

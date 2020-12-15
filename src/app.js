@@ -13,7 +13,6 @@ const server = http.createServer(app);
 const boot = async () => {
   try {
     enableGracefulExit(server, db);
-    await db.testConnection();
     await initSetup();
 
     server.listen(PORT, HOST, () => {

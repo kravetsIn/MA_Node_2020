@@ -21,8 +21,7 @@ const db = (config) => {
           )`,
         );
 
-        console.log(`DEBUG: Created table products`);
-
+        console.log(`INFO: Created table if not exists products`);
         return true;
       } catch (err) {
         console.log(err.message || err);
