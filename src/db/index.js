@@ -4,7 +4,7 @@ const {
 const { fatal } = require('../utils');
 
 const db = {};
-let type = defaultType;
+let clientType = defaultType;
 
 const funcWrapper = (func) =>
   typeof func === 'function'
@@ -41,14 +41,14 @@ const setType = (t) => {
     console.log(`WARNING: Cannot find provided DB type!`);
     return false;
   }
-  type = t;
+  clientType = t;
   console.log(`INFO: The DB type has been changed to ${t}!`);
   return true;
 };
 
-const getType = () => type;
+const getType = () => clientType;
 
-const dbWrapper = (t) => db[t] || db[type];
+const dbWrapper = (t) => db[t] || db[clientType];
 
 module.exports = {
   init,
@@ -61,11 +61,21 @@ module.exports = {
   funcWrapper,
   testConnection: async () => funcWrapper(dbWrapper().testConnection)(),
   close: async () => funcWrapper(dbWrapper().close)(),
+  getAllRowsInTable: async (table) => funcWrapper(dbWrapper().getAllRowsInTable)(table),
+  createDBTables: async () => funcWrapper(dbWrapper().createDBTables)(),
   createProduct: async (product) => funcWrapper(dbWrapper().createProduct)(product),
   getProduct: async (id) => funcWrapper(dbWrapper().getProduct)(id),
   updateProduct: async (product) => funcWrapper(dbWrapper().updateProduct)(product),
   deleteProduct: async (id) => funcWrapper(dbWrapper().deleteProduct)(id),
-  // getProductByKeys: async (product) => funcWrapper(dbWrapper().getProductByKeys)(product),
-  // getAllRowsInTable: async (table) => funcWrapper(dbWrapper().getAllRowsInTable)(table),
-  // createProductsTable: async () => funcWrapper(dbWrapper().createProductsTable)(),
+  getProductByKeys: async (product) => funcWrapper(dbWrapper().getProductByKeys)(product),
+  createColor: async (color) => funcWrapper(dbWrapper().createColor)(color),
+  getColor: async (id) => funcWrapper(dbWrapper().getColor)(id),
+  updateColor: async (color) => funcWrapper(dbWrapper().updateColor)(color),
+  deleteColor: async (id) => funcWrapper(dbWrapper().deleteColor)(id),
+  getColorByKeys: async (color) => funcWrapper(dbWrapper().getColorByKeys)(color),
+  createType: async (type) => funcWrapper(dbWrapper().createType)(type),
+  reedType: async (id) => funcWrapper(dbWrapper().getType)(id),
+  updateType: async (type) => funcWrapper(dbWrapper().updateType)(type),
+  deleteType: async (id) => funcWrapper(dbWrapper().deleteType)(id),
+  getTypeByKeys: async (type) => funcWrapper(dbWrapper().getTypeByKeys)(type),
 };

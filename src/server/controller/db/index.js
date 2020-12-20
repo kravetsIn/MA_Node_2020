@@ -1,6 +1,6 @@
 const crud = require('./crud');
 const csv2db = require('./products2db');
-const getAllProducts = require('./gelAllProducts');
+const getAllProducts = require('./getAllProducts');
 
 module.exports = {
   ...crud,

@@ -2,7 +2,7 @@ const fs = require('fs');
 const {
   path: { uploads, optimize },
 } = require('../config');
-// const db = require('../db');
+const db = require('../db');
 
 const initSetup = async () => {
   try {
@@ -11,7 +11,7 @@ const initSetup = async () => {
       if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
     }
 
-    // await db.createProductsTable();
+    await db.createDBTables();
   } catch (err) {
     console.log(`ERROR in initSetup():  ${err.message || err}`);
     throw err;

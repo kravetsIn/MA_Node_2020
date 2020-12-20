@@ -5,28 +5,6 @@ const name = 'knex';
 const db = (config) => {
   const knex = new Knex(config);
 
-  // const createProductsTable = async () => {
-  //   try {
-  //     await client.query(
-  //       `CREATE TABLE IF NOT EXISTS products(
-  //           id SERIAL PRIMARY KEY,
-  //           type VARCHAR(255) NOT NULL,
-  //           color VARCHAR(255) NOT NULL,
-  //           price NUMERIC(10,2) NOT NULL,
-  //           quantity BIGINT NOT NULL,
-  //           created_at TIMESTAMP DEFAULT NULL,
-  //           updated_at TIMESTAMP DEFAULT NULL,
-  //           deleted_at TIMESTAMP DEFAULT NULL
-  //         )`,
-  //     );
-
-  //     return true;
-  //   } catch (err) {
-  //     console.log(err.message || err);
-  //     throw err;
-  //   }
-  // };
-
   const testConnection = async () => {
     try {
       console.log(`INFO: Hello from ${name} testConnection`);
@@ -114,46 +92,6 @@ const db = (config) => {
     }
   };
 
-  // const getProductByKeys = async (product = {}) => {
-  //   try {
-  //     if (product.constructor !== Object) throw new Error('ERROR: product not object');
-  //     if (Object.keys(product).length === 0) throw new Error('ERROR: product is empty');
-
-  //     const query = [];
-  //     const values = [];
-
-  //     // eslint-disable-next-line no-restricted-syntax
-  //     for (const [i, [key, value]] of Object.entries(product).entries()) {
-  //       query.push(`${key} = $${i + 1}`);
-  //       values.push(value);
-  //     }
-
-  //     const res = await client.query(
-  //       `SELECT * FROM products WHERE ${query.join(' AND ')} AND deleted_at IS NULL`,
-  //       values,
-  //     );
-
-  //     console.log(`DEBUG: Product updated ${JSON.stringify(res.rows[0])}`);
-  //     return res.rows[0];
-  //   } catch (err) {
-  //     console.error(err.message || err);
-  //     throw err;
-  //   }
-  // };
-
-  // const getAllRowsInTable = async (table) => {
-  //   try {
-  //     if (!table) throw new Error(`ERROR: No table defined`);
-
-  //     const res = await client.query(`SELECT * FROM ${table} WHERE deleted_at IS NULL`);
-
-  //     return res.rows;
-  //   } catch (err) {
-  //     console.error(err.message || err);
-  //     throw err;
-  //   }
-  // };
-
   return {
     testConnection,
     close,
@@ -161,9 +99,6 @@ const db = (config) => {
     getProduct,
     updateProduct,
     deleteProduct,
-    // getProductByKeys,
-    // getAllRowsInTable,
-    // createProductsTable,
   };
 };
 
