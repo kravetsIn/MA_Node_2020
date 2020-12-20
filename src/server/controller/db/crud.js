@@ -39,7 +39,7 @@ const reedProduct = async (req, res, next) => {
     const product = await db.getProduct(id);
 
     if (!product || (Object.keys(product).length === 0 && product.constructor === Object))
-      res.send('Product not found');
+      res.send({ message: 'Product not found' });
     else res.send({ product });
   } catch (err) {
     console.log('ERROR:', err.message || err);
@@ -78,7 +78,7 @@ const deleteProduct = async (req, res, next) => {
 
     await db.deleteProduct(id);
 
-    res.send(`Product deleted`);
+    res.send({ message: `Product deleted` });
   } catch (err) {
     console.log('ERROR:', err.message || err);
     next(err);

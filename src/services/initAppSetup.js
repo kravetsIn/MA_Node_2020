@@ -5,11 +5,17 @@ const {
 // const db = require('../db');
 
 const initSetup = async () => {
-  if (!fs.existsSync(uploads)) {
-    fs.mkdirSync(uploads);
-    if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
+  try {
+    if (!fs.existsSync(uploads)) {
+      fs.mkdirSync(uploads);
+      if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
+    }
+
+    // await db.createProductsTable();
+  } catch (err) {
+    console.log(`ERROR in initSetup():  ${err.message || err}`);
+    throw err;
   }
-  // await db.createProductsTable();
 };
 
 module.exports = initSetup;
