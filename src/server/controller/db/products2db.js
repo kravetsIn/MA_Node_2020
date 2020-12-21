@@ -19,19 +19,11 @@ const push2db = () => {
       // eslint-disable-next-line no-param-reassign
       line = line.trim();
       const product = JSON.parse(line);
+      const hasType = await db.getTypeByKeys({ name: product.type });
+      const hasColor = await db.getColorByKeys({ name: product.color });
 
-      let productKey = JSON.parse(JSON.stringify(product));
-      productKey.quantity = undefined;
-      productKey = JSON.parse(JSON.stringify(productKey));
-
-      const sameProduct = await db.getProductByKeys(productKey);
-
-      if (sameProduct)
-        await db.updateProduct({
-          id: sameProduct.id,
-          quantity: parseInt(product.quantity, 10) + parseInt(sameProduct.quantity, 10),
-        });
-      else await db.createProduct(product);
+      if (hasType && hasColor) await db.createProduct(product);
+      else console.log(`INFO: Product not added in database`, product);
     });
   };
 

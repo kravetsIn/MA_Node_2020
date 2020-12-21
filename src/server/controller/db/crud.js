@@ -17,9 +17,21 @@ const createProduct = async (req, res, next) => {
       throw err;
     }
 
-    const product = await db.createProduct(body);
+    const hasType = await db.getTypeByKeys({ name: type });
+    const hasColor = await db.getColorByKeys({ name: color });
+    console.log(hasType, hasColor);
+    if (hasType && hasColor) {
+      const hasTypeId = hasType.id;
+      const hasColorId = hasColor.id;
+      const product = { ...body, type: hasTypeId, color: hasColorId };
 
-    res.send({ id: product.id, product });
+      const createdProduct = await db.createProduct(product);
+      res.send({ product: createdProduct });
+    } else {
+      const err = new Error(`Type or product not created`);
+      err.statusCode = 400;
+      throw err;
+    }
   } catch (err) {
     console.log('ERROR:', err.message || err);
     next(err);

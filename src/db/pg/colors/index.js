@@ -8,7 +8,10 @@ module.exports = (client) => {
           const timestamp = new Date();
 
           const res = await client.query(
-            `INSERT INTO products(name, created_at, updated_at, deleted_at) VALUES($1, $2, $3, $4) RETURNING *`,
+            `INSERT INTO colors(name, created_at, updated_at, deleted_at)
+            VALUES($1, $2, $3, $4)
+            ON CONFLICT (name) DO NOTHING
+            RETURNING *`,
             [name, timestamp, timestamp, null],
           );
 
@@ -94,7 +97,7 @@ module.exports = (client) => {
           }
 
           const res = await client.query(
-            `SELECT * FROM products WHERE ${query.join(' AND ')} AND deleted_at IS NULL`,
+            `SELECT * FROM colors WHERE ${query.join(' AND ')} AND deleted_at IS NULL`,
             values,
           );
 

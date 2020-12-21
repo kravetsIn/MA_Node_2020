@@ -9,7 +9,11 @@ module.exports = (client) => {
           const timestamp = new Date();
 
           const res = await client.query(
-            `INSERT INTO products(type, color, price, quantity, created_at, updated_at, deleted_at) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+            `INSERT INTO products(type, color, price, quantity, created_at, updated_at, deleted_at)
+              VALUES($1, $2, $3, $4, $5, $6, $7)
+              ON CONFLICT (type, color, price) DO UPDATE
+                SET quantity = products.quantity + $4
+              RETURNING *`,
             [type, color, price, quantity, timestamp, timestamp, null],
           );
 

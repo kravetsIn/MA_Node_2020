@@ -38,23 +38,25 @@ const db = (config) => {
           await client.query(
             `
           CREATE TABLE IF NOT EXISTS types(
-            id SERIAL PRIMARY KEY,
+            id SERIAL,
             name VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT NULL,
             updated_at TIMESTAMP DEFAULT NULL,
-            deleted_at TIMESTAMP DEFAULT NULL
+            deleted_at TIMESTAMP DEFAULT NULL,
+            PRIMARY KEY (name)
           );
 
           CREATE TABLE IF NOT EXISTS colors(
-            id SERIAL PRIMARY KEY,
+            id SERIAL,
             name VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT NULL,
             updated_at TIMESTAMP DEFAULT NULL,
-            deleted_at TIMESTAMP DEFAULT NULL
+            deleted_at TIMESTAMP DEFAULT NULL,
+            PRIMARY KEY (name)
           );
 
           CREATE TABLE IF NOT EXISTS products(
-              id SERIAL PRIMARY KEY,
+              id INT GENERATED ALWAYS AS IDENTITY,
               type integer,
               color integer,
               price NUMERIC(10,2) NOT NULL,
@@ -63,7 +65,8 @@ const db = (config) => {
               updated_at TIMESTAMP DEFAULT NULL,
               deleted_at TIMESTAMP DEFAULT NULL,
               FOREIGN KEY (type) REFERENCES types (id),
-              FOREIGN KEY (color) REFERENCES colors (id)
+              FOREIGN KEY (color) REFERENCES colors (id),
+              PRIMARY KEY (type, color, price)
           );
           `,
           );
