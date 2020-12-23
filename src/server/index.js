@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { auth, errorHandler, notFound } = require('./middlewares');
-const { task, discount, products, store } = require('./routes');
+const routes = require('./routes');
 
 const app = express();
 
@@ -13,16 +13,8 @@ app.use(
   }),
 );
 
-app.use(auth);
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-app.use('/task', task);
-app.use('/discount', discount);
-app.use('/products', products);
-app.use('/store', store);
+// app.use(auth);
+app.use('/', routes);
 app.use(notFound);
 app.use(errorHandler);
 

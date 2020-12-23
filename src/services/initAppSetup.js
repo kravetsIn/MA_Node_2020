@@ -2,11 +2,19 @@ const fs = require('fs');
 const {
   path: { uploads, optimize },
 } = require('../config');
+const db = require('../db');
 
-const initSetup = () => {
-  if (!fs.existsSync(uploads)) {
-    fs.mkdirSync(uploads);
-    if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
+const initSetup = async () => {
+  try {
+    if (!fs.existsSync(uploads)) {
+      fs.mkdirSync(uploads);
+      if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
+    }
+    await db.testConnection();
+    await db.createProductsTable();
+  } catch (err) {
+    console.log(`ERROR in initSetup():  ${err.message || err}`);
+    throw err;
   }
 };
 

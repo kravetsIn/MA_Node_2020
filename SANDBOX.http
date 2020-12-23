@@ -43,3 +43,24 @@ content-type: application/json
 
 { "filename" : "example_name.json" }
 ###
+
+GET http://localhost:3000/db/allproducts
+###
+
+POST http://localhost:3000/db/create HTTP/1.1
+content-type: application/json
+
+{ "type": "gloves", "color":"black", "quantity":10, "price":15 }
+###
+
+GET http://localhost:3000/db/reed?id=11
+###
+
+GET http://localhost:3000/db/delete?id=1
+###
+
+POST http://localhost:3000/db/update HTTP/1.1
+content-type: application/json
+
+{ "id": 1, "quantity": 19 }
+###

@@ -3,7 +3,9 @@ const fs = require('fs');
 const { promisify } = require('util');
 const { pipeline } = require('stream');
 
-const { uploads, optimize } = require('../../config/path');
+const {
+  path: { uploads, optimize },
+} = require('../../config');
 const {
   store: { uploadCsv },
 } = require('../../services');
