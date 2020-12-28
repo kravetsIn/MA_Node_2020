@@ -10,8 +10,8 @@ const initSetup = async () => {
       fs.mkdirSync(uploads);
       if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
     }
-    await db.testConnection();
-    await db.createProductsTable();
+
+    await db.createDBTables();
   } catch (err) {
     console.log(`ERROR in initSetup():  ${err.message || err}`);
     throw err;

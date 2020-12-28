@@ -47,20 +47,56 @@ content-type: application/json
 GET http://localhost:3000/db/allproducts
 ###
 
-POST http://localhost:3000/db/create HTTP/1.1
+POST http://localhost:3000/db/products/create HTTP/1.1
 content-type: application/json
 
-{ "type": "gloves", "color":"black", "quantity":10, "price":15 }
+{ "type": "gloves", "color":"red", "quantity":10, "price":5 }
 ###
 
-GET http://localhost:3000/db/reed?id=11
+GET http://localhost:3000/db/products/reed?id=11
 ###
 
-GET http://localhost:3000/db/delete?id=1
+GET http://localhost:3000/db/products/delete?id=1
 ###
 
-POST http://localhost:3000/db/update HTTP/1.1
+POST http://localhost:3000/db/products/update HTTP/1.1
 content-type: application/json
 
 { "id": 1, "quantity": 19 }
+###
+
+POST http://localhost:3000/db/types/create HTTP/1.1
+content-type: application/json
+
+{ "name": "gloves" }
+###
+
+GET http://localhost:3000/db/types/reed?id=1
+###
+
+GET http://localhost:3000/db/types/delete?id=1
+###
+
+POST http://localhost:3000/db/types/update HTTP/1.1
+content-type: application/json
+
+{ "id": 1, "name": "socks" }
+###
+
+POST http://localhost:3000/db/colors/create HTTP/1.1
+content-type: application/json
+
+{ "name": "red" }
+###
+
+GET http://localhost:3000/db/colors/reed?id=1
+###
+
+GET http://localhost:3000/db/colors/delete?id=1
+###
+
+POST http://localhost:3000/db/colors/update HTTP/1.1
+content-type: application/json
+
+{ "id": 1, "name": "green" }
 ###

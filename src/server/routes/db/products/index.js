@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { db: dbController } = require('../controller');
+const { db: dbController } = require('../../../controller');
 
 const {
   createProduct,
