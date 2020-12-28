@@ -2,10 +2,39 @@ const { createGunzip } = require('zlib');
 const { promisify } = require('util');
 const { pipeline, Writable } = require('stream');
 
-const { createCsvToJson, buildUniqArrayOfObject } = require('../../../utils');
-const db = require('../../../db');
-
 const promisifiedPipeline = promisify(pipeline);
+
+const db = require('../../db');
+const { createCsvToJson, buildUniqArrayOfObject } = require('../../utils');
+
+const createProduct = async (product, options = { error: true }) => {
+  const { error } = options;
+
+  const productBeingCreated = product;
+  const { type, color } = productBeingCreated;
+
+  const hasType = await db.getTypeByKeys({ name: type });
+  const hasColor = await db.getColorByKeys({ name: color });
+
+  if (hasType && hasColor) {
+    productBeingCreated.type = hasType.id;
+    productBeingCreated.color = hasColor.id;
+
+    const createdProduct = await db.createProduct(productBeingCreated);
+    return createdProduct;
+  }
+
+  const errorMessage = `INFO: Type or color product not created`;
+
+  if (error) {
+    const err = new Error(errorMessage);
+    err.statusCode = 400;
+    throw err;
+  } else {
+    console.log(errorMessage);
+    return false;
+  }
+};
 
 const push2db = () => {
   let lastStr = '';
@@ -19,11 +48,10 @@ const push2db = () => {
       // eslint-disable-next-line no-param-reassign
       line = line.trim();
       const product = JSON.parse(line);
-      const hasType = await db.getTypeByKeys({ name: product.type });
-      const hasColor = await db.getColorByKeys({ name: product.color });
 
-      if (hasType && hasColor) await db.createProduct(product);
-      else console.log(`INFO: Product not added in database`, product);
+      const createdProduct = await createProduct(product, { error: false });
+
+      if (!createdProduct) console.log(`INFO: Product not added in database`, product);
     });
   };
 
@@ -57,14 +85,7 @@ const products2db = async (inputStream) => {
   }
 };
 
-const csv2db = async (req, res, next) => {
-  try {
-    await products2db(req);
-    res.send({ status: 'ok' });
-  } catch (err) {
-    console.log('ERROR:', err.message || err);
-    next(err);
-  }
+module.exports = {
+  createProduct,
+  products2db,
 };
-
-module.exports = csv2db;

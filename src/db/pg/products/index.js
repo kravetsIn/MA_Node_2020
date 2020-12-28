@@ -30,7 +30,13 @@ module.exports = (client) => {
           if (!id) throw new Error(`ERROR: No product id defined`);
 
           const res = await client.query(
-            `SELECT * FROM products WHERE id = $1 AND deleted_at IS NULL`,
+            `SELECT *
+            FROM products
+            INNER JOIN types
+              ON products.type = types.id
+            INNER JOIN colors
+              ON products.color = colors.id
+            WHERE products.id = $1 AND products.deleted_at IS NULL`,
             [id],
           );
 

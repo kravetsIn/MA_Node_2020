@@ -10,7 +10,8 @@ module.exports = (client) => {
           const res = await client.query(
             `INSERT INTO colors(name, created_at, updated_at, deleted_at)
             VALUES($1, $2, $3, $4)
-            ON CONFLICT (name) DO NOTHING
+            ON CONFLICT (name)
+              DO NOTHING
             RETURNING *`,
             [name, timestamp, timestamp, null],
           );

@@ -43,7 +43,8 @@ const db = (config) => {
             created_at TIMESTAMP DEFAULT NULL,
             updated_at TIMESTAMP DEFAULT NULL,
             deleted_at TIMESTAMP DEFAULT NULL,
-            PRIMARY KEY (name)
+            PRIMARY KEY (id),
+            UNIQUE (name)
           );
 
           CREATE TABLE IF NOT EXISTS colors(
@@ -52,7 +53,8 @@ const db = (config) => {
             created_at TIMESTAMP DEFAULT NULL,
             updated_at TIMESTAMP DEFAULT NULL,
             deleted_at TIMESTAMP DEFAULT NULL,
-            PRIMARY KEY (name)
+            PRIMARY KEY (id),
+            UNIQUE (name)
           );
 
           CREATE TABLE IF NOT EXISTS products(
