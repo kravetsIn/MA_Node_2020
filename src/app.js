@@ -13,6 +13,9 @@ const server = http.createServer(app);
 const boot = async () => {
   try {
     await db.init();
+
+    db.setType('sequelize');
+
     enableGracefulExit(server, db);
     await initSetup();
 

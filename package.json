@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "sequalize:migrate:make": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations migration:generate --name",
+    "sequalize:migrate:latest": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations/ --config=./src/db/sequelize/config/config.js db:migrate",
+    "sequalize:migrate:undo": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations/ --config=./src/db/sequelize/config/config.js db:migrate:undo"
   },
   "author": "Vladyslav Kravets",
   "license": "ISC",
@@ -23,6 +26,8 @@
     "express-basic-auth": "^1.2.0",
     "knex": "^0.21.13",
     "nanoid": "^3.1.18",
-    "pg": "^8.5.1"
+    "pg": "^8.5.1",
+    "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0"
   }
 }

@@ -11,7 +11,7 @@ const initSetup = async () => {
       if (!fs.existsSync(optimize)) fs.mkdirSync(optimize);
     }
 
-    await db.createDBTables();
+    // await db.createDBTables();
   } catch (err) {
     console.log(`ERROR in initSetup():  ${err.message || err}`);
     throw err;
