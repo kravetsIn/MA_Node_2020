@@ -7,7 +7,12 @@
     "start": "node src/app.js",
     "sequalize:migrate:make": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations migration:generate --name",
     "sequalize:migrate:latest": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations/ --config=./src/db/sequelize/config/config.js db:migrate",
-    "sequalize:migrate:undo": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations/ --config=./src/db/sequelize/config/config.js db:migrate:undo"
+    "sequalize:migrate:undo": "./node_modules/.bin/sequelize --migrations-path=./src/db/sequelize/migrations/ --config=./src/db/sequelize/config/config.js db:migrate:undo",
+    "knex:migrate:make": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js migrate:make",
+    "knex:migrate:latest": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:latest",
+    "knex:migrate:up": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:up",
+    "knex:migrate:down": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:down"
+  
   },
   "author": "Vladyslav Kravets",
   "license": "ISC",
