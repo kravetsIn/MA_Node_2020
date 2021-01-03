@@ -19,7 +19,7 @@ const uploadCsv = async (inputStream) => {
 
     const filePath = `${uploads}/${filename}.json`;
     const outputStream = fs.createWriteStream(filePath);
-    const csvToJson = createCsvToJson();
+    const csvToJson = createCsvToJson({ onlyPrice: false });
     inputStream.on('error', (err) => console.log(err));
 
     await promisifiedPipeline(inputStream, gunzlib, csvToJson, outputStream);

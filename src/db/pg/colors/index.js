@@ -1,7 +1,7 @@
 module.exports = (client) => {
   try {
     return {
-      createColor: async ({ name }) => {
+      createColor: async (name) => {
         try {
           if (!name) throw new Error(`ERROR: No color name defined`);
 

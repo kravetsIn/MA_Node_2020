@@ -1,14 +1,20 @@
 module.exports = (client) => {
   try {
     return {
-      createType: async ({ name }) => {
+      createType: async (name) => {
         try {
           if (!name) throw new Error(`ERROR: No type name defined`);
 
           const timestamp = new Date();
 
           const res = await client.query(
-            `INSERT INTO types(name, created_at, updated_at, deleted_at) VALUES($1, $2, $3, $4) RETURNING *`,
+            `
+            INSERT INTO colors(name, created_at, updated_at, deleted_at)
+            VALUES($1, $2, $3, $4)
+            ON CONFLICT (name)
+              DO NOTHING
+            RETURNING *
+            `,
             [name, timestamp, timestamp, null],
           );
 

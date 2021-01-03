@@ -1,6 +1,6 @@
 const { Transform } = require('stream');
 
-const jsonGenerator = (array, keys, onlyPrice) => {
+const jsonGenerator = (array, keys, onlyPrice = false) => {
   return array.reduce((acc, red) => {
     const jsonString = red.split(',').map((item, index) => {
       // eslint-disable-next-line no-restricted-globals
