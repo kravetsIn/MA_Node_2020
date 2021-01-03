@@ -11,8 +11,11 @@
     "knex:migrate:make": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js migrate:make",
     "knex:migrate:latest": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:latest",
     "knex:migrate:up": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:up",
-    "knex:migrate:down": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:down"
-  
+    "knex:migrate:down": "./node_modules/.bin/knex --knexfile=./src/db/knex/knexfile.js  migrate:down",
+    "pg:migrate:make": "./node_modules/.bin/node-pg-migrate --migrations-dir=./src/db/pg/migrations/ --config-file=./src/db/pg/config/index.js create",
+    "pg:migrate:up": "./node_modules/.bin/node-pg-migrate --migrations-dir=./src/db/pg/migrations/ --config-file=./src/db/pg/config/index.js up",
+    "pg:migrate:down": "./node_modules/.bin/node-pg-migrate --migrations-dir=./src/db/pg/migrations/ --config-file=./src/db/pg/config/index.js down",
+    "pg:migrate:redo": "./node_modules/.bin/node-pg-migrate --migrations-dir=./src/db/pg/migrations/ --config-file=./src/db/pg/config/index.js redo"
   },
   "author": "Vladyslav Kravets",
   "license": "ISC",
@@ -31,6 +34,7 @@
     "express-basic-auth": "^1.2.0",
     "knex": "^0.21.13",
     "nanoid": "^3.1.18",
+    "node-pg-migrate": "^5.9.0",
     "pg": "^8.5.1",
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0"
