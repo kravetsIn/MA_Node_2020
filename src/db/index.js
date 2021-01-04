@@ -62,7 +62,6 @@ module.exports = {
   testConnection: async () => funcWrapper(dbWrapper().testConnection)(),
   close: async () => funcWrapper(dbWrapper().close)(),
   getAllRowsInTable: async (table) => funcWrapper(dbWrapper().getAllRowsInTable)(table),
-  createDBTables: async () => funcWrapper(dbWrapper().createDBTables)(),
   createProduct: async (product) => funcWrapper(dbWrapper().createProduct)(product),
   getProduct: async (id) => funcWrapper(dbWrapper().getProduct)(id),
   updateProduct: async (product) => funcWrapper(dbWrapper().updateProduct)(product),

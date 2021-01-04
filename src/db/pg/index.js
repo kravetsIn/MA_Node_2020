@@ -33,52 +33,6 @@ const db = (config) => {
           throw err;
         }
       },
-      createDBTables: async () => {
-        try {
-          await client.query(
-            `
-          CREATE TABLE IF NOT EXISTS types(
-            id SERIAL,
-            name VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT NULL,
-            updated_at TIMESTAMP DEFAULT NULL,
-            deleted_at TIMESTAMP DEFAULT NULL,
-            PRIMARY KEY (id),
-            UNIQUE (name)
-          );
-
-          CREATE TABLE IF NOT EXISTS colors(
-            id SERIAL,
-            name VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT NULL,
-            updated_at TIMESTAMP DEFAULT NULL,
-            deleted_at TIMESTAMP DEFAULT NULL,
-            PRIMARY KEY (id),
-            UNIQUE (name)
-          );
-
-          CREATE TABLE IF NOT EXISTS products(
-              id INT GENERATED ALWAYS AS IDENTITY,
-              type integer,
-              color integer,
-              price NUMERIC(10,2) NOT NULL,
-              quantity BIGINT NOT NULL,
-              created_at TIMESTAMP DEFAULT NULL,
-              updated_at TIMESTAMP DEFAULT NULL,
-              deleted_at TIMESTAMP DEFAULT NULL,
-              FOREIGN KEY (type) REFERENCES types (id),
-              FOREIGN KEY (color) REFERENCES colors (id),
-              PRIMARY KEY (type, color, price)
-          );
-          `,
-          );
-
-          return true;
-        } catch (err) {
-          console.log(err.message || err);
-          throw err;
-        }
-      },
       getAllRowsInTable: async (table) => {
         try {
           if (!table) throw new Error(`ERROR: No table defined`);
